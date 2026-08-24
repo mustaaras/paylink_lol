@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=1.2">
+  <link rel="stylesheet" href="/css/style.css?v=1.5">
 </head>
 <body>
 
@@ -298,108 +298,90 @@
           <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1H3L5 10H13L15 4H4M5 13.5C5 14.3 4.3 15 3.5 15C2.7 15 2 14.3 2 13.5M12.5 13.5C12.5 14.3 11.8 15 11 15C10.2 15 9.5 14.3 9.5 13.5"/></svg>
           Ecommerce & Retail
         </button>
-
-        <!-- See More Dropdown Wrapper -->
-        <div class="more-categories-wrapper" id="more-categories-wrapper">
-          <button type="button" class="tab-btn more-cat-btn" id="more-cat-btn" aria-haspopup="true" aria-expanded="false">
-            <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="4" cy="8" r="1.3" fill="currentColor"/><circle cx="8" cy="8" r="1.3" fill="currentColor"/><circle cx="12" cy="8" r="1.3" fill="currentColor"/></svg>
-            <span id="more-cat-label">See More</span>
-            <svg class="chevron-icon" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2.5 4.5L6 8L9.5 4.5"/></svg>
-          </button>
-
-          <div class="more-categories-dropdown" id="more-categories-dropdown" style="display: none;">
-            <div class="more-dropdown-header">
-              <span class="more-dropdown-title">All 28 Categories</span>
-              <span class="more-dropdown-badge">Niche Filters</span>
-            </div>
-            <div class="more-categories-grid">
-              <button class="more-cat-item" data-category="business-finance">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2V14M4 5L8 3L12 5M2 9L4 5L6 9H2ZM10 9L12 5L14 9H10Z"/></svg>
-                <span>Business, Finance & Legal</span>
-              </button>
-              <button class="more-cat-item" data-category="security-privacy">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5L2.5 4V8C2.5 11.5 5 14 8 15C11 14 13.5 11.5 13.5 8V4L8 1.5Z"/><path d="M5.5 8L7 9.5L10.5 6"/></svg>
-                <span>Security & Privacy</span>
-              </button>
-              <button class="more-cat-item" data-category="health-wellness">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7.5C2 4.5 4.5 2.5 7 4.5C9.5 2.5 12 4.5 12 7.5C12 11 7 14 7 14C7 14 2 11 2 7.5Z"/><path d="M1 8H4L5.5 5.5L7.5 10.5L9 8H13"/></svg>
-                <span>Health, Fitness & Wellness</span>
-              </button>
-              <button class="more-cat-item" data-category="social-creator">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="8" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M5.8 7.1L10.2 4.9M5.8 8.9L10.2 11.1"/></svg>
-                <span>Social Media & Creator Tools</span>
-              </button>
-              <button class="more-cat-item" data-category="leaderboards">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2H12V7C12 9.2 10.2 11 8 11C5.8 11 4 9.2 4 7V2ZM4 4H2C2 5.5 3 6.5 4 6.8M12 4H14C14 5.5 13 6.5 12 6.8M8 11V14M5 14H11"/></svg>
-                <span>Leaderboards & Attention Markets</span>
-              </button>
-              <button class="more-cat-item" data-category="hiring-jobs">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="12" height="9" rx="2"/><path d="M5 5V3C5 2.4 5.4 2 6 2H10C10.6 2 11 2.4 11 3V5M2 8H14"/></svg>
-                <span>Hiring, Jobs & Careers</span>
-              </button>
-              <button class="more-cat-item" data-category="education">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2L1 5.5L8 9L15 5.5L8 2ZM3.5 7.5V11.5C3.5 11.5 5.5 13.5 8 13.5C10.5 13.5 12.5 11.5 12.5 11.5V7.5M14 6V11"/></svg>
-                <span>Education & Learning</span>
-              </button>
-              <button class="more-cat-item" data-category="agencies-services">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 8L5 4L9 7L13 3M11 8L15 12M5 12L9 8"/></svg>
-                <span>Agencies, Studios & Services</span>
-              </button>
-              <button class="more-cat-item" data-category="games-entertainment">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="12" height="8" rx="3"/><path d="M4.5 8H7.5M6 6.5V9.5M10.5 7H11.5M9.5 9H10.5"/></svg>
-                <span>Games & Entertainment</span>
-              </button>
-              <button class="more-cat-item" data-category="people-profiles">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="5" r="3"/><path d="M3 14C3 11.2 5.2 9 8 9C10.8 9 13 11.2 13 14"/></svg>
-                <span>People & Profiles</span>
-              </button>
-              <button class="more-cat-item" data-category="productivity">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="12" rx="1.5"/><rect x="9" y="2" width="5" height="7" rx="1.5"/><rect x="9" y="11" width="5" height="3" rx="1"/></svg>
-                <span>Productivity & Personal Tools</span>
-              </button>
-              <button class="more-cat-item" data-category="design-creative">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5C4.4 1.5 1.5 4.4 1.5 8C1.5 11.6 4.4 14.5 8 14.5C9.5 14.5 10.5 13.5 10.5 12.2C10.5 11.5 10.2 11 9.8 10.5C9.4 10 9.2 9.5 9.2 9C9.2 8 10 7.2 11 7.2H12.5C13.6 7.2 14.5 6.3 14.5 5.2C14.5 3.2 11.6 1.5 8 1.5Z"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="7" cy="4.5" r="1" fill="currentColor"/><circle cx="10" cy="5.5" r="1" fill="currentColor"/></svg>
-                <span>Design & Creative</span>
-              </button>
-              <button class="more-cat-item" data-category="writing-content">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z"/></svg>
-                <span>Writing & Content</span>
-              </button>
-              <button class="more-cat-item" data-category="directories-launch">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M10.5 5.5L7 7L5.5 10.5L9 9L10.5 5.5Z"/></svg>
-                <span>Directories, Launch & Discovery</span>
-              </button>
-              <button class="more-cat-item" data-category="ai-media">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1L9.5 5.5L14 7L9.5 8.5L8 13L6.5 8.5L2 7L6.5 5.5L8 1Z"/><path d="M12.5 11.5L13.5 13.5L15.5 14L13.5 14.5L12.5 16.5L11.5 14.5L9.5 14L11.5 13.5L12.5 11.5Z"/></svg>
-                <span>AI Media Generation</span>
-              </button>
-              <button class="more-cat-item" data-category="audio-voice">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5.5" y="2" width="5" height="8" rx="2.5"/><path d="M3 7V8C3 10.8 5.2 13 8 13C10.8 13 13 10.8 13 8V7M8 13V15M5.5 15H10.5"/></svg>
-                <span>Audio, Voice & Podcasting</span>
-              </button>
-              <button class="more-cat-item" data-category="sales-leads">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3.5"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
-                <span>Sales & Lead Generation</span>
-              </button>
-              <button class="more-cat-item" data-category="travel-lifestyle">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z"/><circle cx="8" cy="6" r="2"/></svg>
-                <span>Travel, Local & Lifestyle</span>
-              </button>
-              <button class="more-cat-item" data-category="real-estate">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6.5L8 2L14 6.5V14H10V9H6V14H2V6.5Z"/></svg>
-                <span>Real Estate & Property</span>
-              </button>
-              <button class="more-cat-item" data-category="media-news">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 5H11M5 8H11M5 11H8"/></svg>
-                <span>Media & News</span>
-              </button>
-              <button class="more-cat-item" data-category="other">
-                <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="5" rx="1"/><circle cx="12" cy="4.5" r="2.5"/><polygon points="8,9.5 11,14.5 5,14.5"/></svg>
-                <span>Other</span>
-              </button>
-            </div>
-          </div>
-        </div>
+        <button class="tab-btn" data-category="business-finance">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2V14M4 5L8 3L12 5M2 9L4 5L6 9H2ZM10 9L12 5L14 9H10Z"/></svg>
+          Business, Finance & Legal
+        </button>
+        <button class="tab-btn" data-category="security-privacy">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5L2.5 4V8C2.5 11.5 5 14 8 15C11 14 13.5 11.5 13.5 8V4L8 1.5Z"/><path d="M5.5 8L7 9.5L10.5 6"/></svg>
+          Security & Privacy
+        </button>
+        <button class="tab-btn" data-category="health-wellness">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 7.5C2 4.5 4.5 2.5 7 4.5C9.5 2.5 12 4.5 12 7.5C12 11 7 14 7 14C7 14 2 11 2 7.5Z"/><path d="M1 8H4L5.5 5.5L7.5 10.5L9 8H13"/></svg>
+          Health, Fitness & Wellness
+        </button>
+        <button class="tab-btn" data-category="social-creator">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="4" cy="8" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M5.8 7.1L10.2 4.9M5.8 8.9L10.2 11.1"/></svg>
+          Social Media & Creator Tools
+        </button>
+        <button class="tab-btn" data-category="leaderboards">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 2H12V7C12 9.2 10.2 11 8 11C5.8 11 4 9.2 4 7V2ZM4 4H2C2 5.5 3 6.5 4 6.8M12 4H14C14 5.5 13 6.5 12 6.8M8 11V14M5 14H11"/></svg>
+          Leaderboards & Attention
+        </button>
+        <button class="tab-btn" data-category="hiring-jobs">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="5" width="12" height="9" rx="2"/><path d="M5 5V3C5 2.4 5.4 2 6 2H10C10.6 2 11 2.4 11 3V5M2 8H14"/></svg>
+          Hiring & Jobs
+        </button>
+        <button class="tab-btn" data-category="education">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 2L1 5.5L8 9L15 5.5L8 2ZM3.5 7.5V11.5C3.5 11.5 5.5 13.5 8 13.5C10.5 13.5 12.5 11.5 12.5 11.5V7.5M14 6V11"/></svg>
+          Education & Learning
+        </button>
+        <button class="tab-btn" data-category="agencies-services">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M1 8L5 4L9 7L13 3M11 8L15 12M5 12L9 8"/></svg>
+          Agencies & Services
+        </button>
+        <button class="tab-btn" data-category="games-entertainment">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="4" width="12" height="8" rx="3"/><path d="M4.5 8H7.5M6 6.5V9.5M10.5 7H11.5M9.5 9H10.5"/></svg>
+          Games & Entertainment
+        </button>
+        <button class="tab-btn" data-category="people-profiles">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="5" r="3"/><path d="M3 14C3 11.2 5.2 9 8 9C10.8 9 13 11.2 13 14"/></svg>
+          People & Profiles
+        </button>
+        <button class="tab-btn" data-category="productivity">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="12" rx="1.5"/><rect x="9" y="2" width="5" height="7" rx="1.5"/><rect x="9" y="11" width="5" height="3" rx="1"/></svg>
+          Productivity Tools
+        </button>
+        <button class="tab-btn" data-category="design-creative">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5C4.4 1.5 1.5 4.4 1.5 8C1.5 11.6 4.4 14.5 8 14.5C9.5 14.5 10.5 13.5 10.5 12.2C10.5 11.5 10.2 11 9.8 10.5C9.4 10 9.2 9.5 9.2 9C9.2 8 10 7.2 11 7.2H12.5C13.6 7.2 14.5 6.3 14.5 5.2C14.5 3.2 11.6 1.5 8 1.5Z"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="7" cy="4.5" r="1" fill="currentColor"/><circle cx="10" cy="5.5" r="1" fill="currentColor"/></svg>
+          Design & Creative
+        </button>
+        <button class="tab-btn" data-category="writing-content">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z"/></svg>
+          Writing & Content
+        </button>
+        <button class="tab-btn" data-category="directories-launch">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M10.5 5.5L7 7L5.5 10.5L9 9L10.5 5.5Z"/></svg>
+          Directories & Launch
+        </button>
+        <button class="tab-btn" data-category="ai-media">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1L9.5 5.5L14 7L9.5 8.5L8 13L6.5 8.5L2 7L6.5 5.5L8 1Z"/><path d="M12.5 11.5L13.5 13.5L15.5 14L13.5 14.5L12.5 16.5L11.5 14.5L9.5 14L11.5 13.5L12.5 11.5Z"/></svg>
+          AI Media Gen
+        </button>
+        <button class="tab-btn" data-category="audio-voice">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="5.5" y="2" width="5" height="8" rx="2.5"/><path d="M3 7V8C3 10.8 5.2 13 8 13C10.8 13 13 10.8 13 8V7M8 13V15M5.5 15H10.5"/></svg>
+          Audio & Voice
+        </button>
+        <button class="tab-btn" data-category="sales-leads">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3.5"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
+          Sales & Leads
+        </button>
+        <button class="tab-btn" data-category="travel-lifestyle">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z"/><circle cx="8" cy="6" r="2"/></svg>
+          Travel & Lifestyle
+        </button>
+        <button class="tab-btn" data-category="real-estate">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M2 6.5L8 2L14 6.5V14H10V9H6V14H2V6.5Z"/></svg>
+          Real Estate
+        </button>
+        <button class="tab-btn" data-category="media-news">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 5H11M5 8H11M5 11H8"/></svg>
+          Media & News
+        </button>
+        <button class="tab-btn" data-category="other">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="2" width="5" height="5" rx="1"/><circle cx="12" cy="4.5" r="2.5"/><polygon points="8,9.5 11,14.5 5,14.5"/></svg>
+          Other
+        </button>
       </div>
     </div>
 

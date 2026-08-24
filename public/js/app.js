@@ -538,7 +538,7 @@ function renderLeaderboard() {
     const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(xShareText)}`;
 
     return `
-      <div class="item-card" id="listing-${item.id}">
+      <div class="item-row" id="listing-${item.id}">
         <div class="item-icon-col">
           <span class="rank-tag-above ${rankClass}">#${item.rank}</span>
           <div class="item-thumb-wrapper">
@@ -557,10 +557,6 @@ function renderLeaderboard() {
           <p class="item-tagline">${escapeHtml(item.tagline)}</p>
 
           <div class="item-meta">
-            <span class="bid-pill">
-              <svg class="badge-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1C8 1 9.5 3.5 9.5 5.5C9.5 6.5 9 7.2 8.5 7.8C10.5 8 12 9.5 12 11.5C12 13.5 10.2 15 8 15C5.8 15 4 13.5 4 11.5C4 9.8 5.2 8.5 6.8 8.1C6.2 7.3 6 6.5 6 5.5C6 3.5 8 1 8 1Z"/></svg>
-              ${formatCurrency(item.bid_amount)} Current Bid
-            </span>
             <span class="clicks-pill" id="clicks-${item.id}">
               <svg class="badge-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/></svg>
               <span class="clicks-num">${item.clicks_count}</span> clicks
@@ -568,19 +564,26 @@ function renderLeaderboard() {
           </div>
         </div>
 
-        <div class="item-actions">
-          <a href="${xShareUrl}" target="_blank" rel="noopener" class="card-share-btn" title="Share rank on X (Twitter)">
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            Share
-          </a>
-          <button class="btn btn-outbid btn-sm" onclick="openOutbidModal('${item.id}', '${escapeJs(item.title)}', ${item.rank}, ${item.bid_amount})">
-            <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12V4M4 8L8 4L12 8"/></svg>
-            Outbid
-          </button>
-          <a href="/go/${item.id}" target="_blank" rel="noopener" class="btn btn-buy btn-sm">
-            <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9V13H3V4H7M9 3H13V7M6 10L13 3"/></svg>
-            Open Link
-          </a>
+        <div class="item-right-col">
+          <div class="item-bid-highlight">
+            <span class="bid-amount-text">${formatCurrency(item.bid_amount)}</span>
+            <span class="bid-badge-label">Current Bid</span>
+          </div>
+
+          <div class="item-actions">
+            <a href="${xShareUrl}" target="_blank" rel="noopener" class="card-share-btn" title="Share rank on X (Twitter)">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              Share
+            </a>
+            <button class="btn btn-outbid btn-sm" onclick="openOutbidModal('${item.id}', '${escapeJs(item.title)}', ${item.rank}, ${item.bid_amount})">
+              <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12V4M4 8L8 4L12 8"/></svg>
+              Outbid
+            </button>
+            <a href="/go/${item.id}" target="_blank" rel="noopener" class="btn btn-buy btn-sm">
+              <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9V13H3V4H7M9 3H13V7M6 10L13 3"/></svg>
+              Open Link
+            </a>
+          </div>
         </div>
       </div>
     `;
@@ -654,83 +657,16 @@ function updateTickerFromNotification(notif) {
  * Event listeners setup
  */
 function initEventListeners() {
-  // Category tabs & See More dropdown
-  const tabs = document.querySelectorAll('.tab-btn:not(.more-cat-btn)');
-  const moreWrapper = document.getElementById('more-categories-wrapper');
-  const moreBtn = document.getElementById('more-cat-btn');
-  const moreLabel = document.getElementById('more-cat-label');
-  const moreDropdown = document.getElementById('more-categories-dropdown');
-  const moreItems = document.querySelectorAll('.more-cat-item');
-
-  function closeMoreDropdown() {
-    if (moreWrapper) moreWrapper.classList.remove('open');
-    if (moreDropdown) moreDropdown.style.display = 'none';
-    if (moreBtn) moreBtn.setAttribute('aria-expanded', 'false');
-  }
-
-  function toggleMoreDropdown() {
-    if (!moreWrapper || !moreDropdown) return;
-    const willOpen = moreDropdown.style.display === 'none' || !moreWrapper.classList.contains('open');
-    if (willOpen) {
-      moreWrapper.classList.add('open');
-      moreDropdown.style.display = 'block';
-    } else {
-      closeMoreDropdown();
-    }
-    if (moreBtn) moreBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
-  }
+  // Category tabs (2-line smooth horizontal scroller)
+  const tabs = document.querySelectorAll('.tab-btn');
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
-      moreItems.forEach(i => i.classList.remove('active'));
-      if (moreBtn) moreBtn.classList.remove('active');
-      if (moreLabel) moreLabel.innerText = 'See More';
-      closeMoreDropdown();
-
       tab.classList.add('active');
       currentCategory = tab.dataset.category || 'all';
       renderLeaderboard();
     });
-  });
-
-  if (moreBtn && moreWrapper) {
-    moreBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleMoreDropdown();
-    });
-  }
-
-  moreItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const cat = item.dataset.category;
-      tabs.forEach(t => t.classList.remove('active'));
-      moreItems.forEach(i => i.classList.remove('active'));
-      
-      item.classList.add('active');
-      if (moreBtn) moreBtn.classList.add('active');
-      const catName = categoryNames[cat] || item.querySelector('span')?.innerText || 'Category';
-      if (moreLabel) moreLabel.innerText = catName;
-      closeMoreDropdown();
-
-      currentCategory = cat;
-      renderLeaderboard();
-    });
-  });
-
-  // Close dropdown on outside click
-  document.addEventListener('click', (e) => {
-    if (moreWrapper && !moreWrapper.contains(e.target)) {
-      closeMoreDropdown();
-    }
-  });
-
-  // Close on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-      closeMoreDropdown();
-    }
   });
 
   // Search Input

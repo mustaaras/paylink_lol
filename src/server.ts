@@ -18,8 +18,23 @@ const __dirname = path.dirname(__filename);
 initDatabase();
 
 const app = express();
+app.set('trust proxy', 1); // Trust Coolify / reverse proxy headers
+
 const PORT = process.env.PORT || 3000;
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+function getBaseUrl(req: Request): string {
+  // If explicitly configured in production env, use it
+  if (process.env.BASE_URL && !process.env.BASE_URL.includes('localhost')) {
+    return process.env.BASE_URL.replace(/\/$/, '');
+  }
+  // Otherwise resolve from reverse proxy headers
+  const forwardedProto = req.headers['x-forwarded-proto'];
+  const protocol = Array.isArray(forwardedProto) ? forwardedProto[0] : (forwardedProto || req.protocol || 'https');
+  const forwardedHost = req.headers['x-forwarded-host'];
+  const host = Array.isArray(forwardedHost) ? forwardedHost[0] : (forwardedHost || req.headers.host || 'paylink.lol');
+  
+  return `${protocol}://${host}`.replace(/\/$/, '');
+}
 
 // Maintain active SSE clients for real-time live feed
 const sseClients = new Set<Response>();
@@ -232,7 +247,7 @@ app.post('/api/listings/create-checkout', async (req: Request, res: Response) =>
       return;
     }
 
-    const checkout = await StripeService.createListingCheckout(input, BASE_URL);
+    const checkout = await StripeService.createListingCheckout(input, getBaseUrl(req));
     res.json(checkout);
   } catch (err: any) {
     console.error('Error creating listing checkout:', err);
@@ -257,7 +272,7 @@ app.post('/api/listings/:id/outbid-checkout', async (req: Request, res: Response
       bidder_email: bidder_email || undefined
     };
 
-    const checkout = await StripeService.createOutbidCheckout(input, BASE_URL);
+    const checkout = await StripeService.createOutbidCheckout(input, getBaseUrl(req));
     res.json(checkout);
   } catch (err: any) {
     console.error('Error creating outbid checkout:', err);
