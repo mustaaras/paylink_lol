@@ -227,7 +227,46 @@ function initQuickSubmit() {
   const form = document.getElementById('quick-submit-form');
   const submitBtn = document.getElementById('quick-submit-action-btn');
 
-  if (!urlInput || !fetchBtn) return;
+  const defaultIcon = document.getElementById('quick-default-icon');
+  const faviconImg = document.getElementById('quick-url-favicon');
+
+  function updateInputIcon(rawVal) {
+    if (!rawVal || !rawVal.trim()) {
+      if (defaultIcon) defaultIcon.style.display = 'block';
+      if (faviconImg) {
+        faviconImg.style.display = 'none';
+        faviconImg.src = '';
+      }
+      return;
+    }
+
+    const domain = getDomainFromUrl(rawVal.trim());
+    if (domain && domain.includes('.') && domain.length >= 4) {
+      const faviconUrl = `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domain)}&sz=128`;
+      if (faviconImg) {
+        faviconImg.src = faviconUrl;
+        faviconImg.onload = () => {
+          if (defaultIcon) defaultIcon.style.display = 'none';
+          faviconImg.style.display = 'block';
+        };
+        faviconImg.onerror = () => {
+          if (defaultIcon) defaultIcon.style.display = 'block';
+          faviconImg.style.display = 'none';
+        };
+      }
+    } else {
+      if (defaultIcon) defaultIcon.style.display = 'block';
+      if (faviconImg) {
+        faviconImg.style.display = 'none';
+        faviconImg.src = '';
+      }
+    }
+  }
+
+  // Live auto-icon display on typing or pasting
+  urlInput.addEventListener('input', () => {
+    updateInputIcon(urlInput.value);
+  });
 
   // Auto-fetch on button click
   fetchBtn.addEventListener('click', () => {
@@ -242,10 +281,11 @@ function initQuickSubmit() {
     }
   });
 
-  // Auto-fetch on paste
+  // Auto-icon and fetch on paste
   urlInput.addEventListener('paste', (e) => {
     setTimeout(() => {
       const pasted = urlInput.value.trim();
+      updateInputIcon(pasted);
       if (pasted && (pasted.startsWith('http://') || pasted.startsWith('https://') || pasted.includes('.'))) {
         handleUrlFetch(pasted);
       }
@@ -414,6 +454,7 @@ function initQuickSubmit() {
           showToast(`🎉 Free link "${escapeHtml(data.listing.title)}" published successfully!`, 'success');
           // Reset form
           urlInput.value = '';
+          updateInputIcon('');
           titleInput.value = '';
           taglineInput.value = '';
           bidInput.value = '0';
@@ -658,12 +699,14 @@ function updateStats(stats) {
   const clicksEl = document.getElementById('stat-clicks');
   const topBidEl = document.getElementById('stat-top-bid');
   const cardVisitors = document.getElementById('stat-visitors-card');
+  const heroTotal = document.getElementById('hero-total-visitors');
 
   if (volEl && stats.total_volume_usd !== undefined) volEl.innerText = formatCurrency(stats.total_volume_usd);
   if (countEl && stats.total_listings !== undefined) countEl.innerText = stats.total_listings;
   if (clicksEl && stats.total_clicks !== undefined) clicksEl.innerText = Number(stats.total_clicks).toLocaleString();
   if (topBidEl && stats.top_bid !== undefined) topBidEl.innerText = formatCurrency(stats.top_bid);
   if (cardVisitors && stats.total_visitors !== undefined) cardVisitors.innerText = Number(stats.total_visitors).toLocaleString();
+  if (heroTotal && stats.total_visitors !== undefined) heroTotal.innerText = Number(stats.total_visitors).toLocaleString();
 
   if (stats.active_visitors !== undefined) {
     updateActiveVisitors(stats.active_visitors);
@@ -672,9 +715,11 @@ function updateStats(stats) {
 
 function updateActiveVisitors(count) {
   const tickerVisitors = document.getElementById('stat-active-visitors');
+  const heroActive = document.getElementById('hero-active-visitors');
   const formatted = Math.max(1, count || 1);
 
   if (tickerVisitors) tickerVisitors.innerText = formatted;
+  if (heroActive) heroActive.innerText = formatted;
 }
 
 /**

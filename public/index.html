@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=2.3">
+  <link rel="stylesheet" href="/css/style.css?v=2.6">
   <!-- Cloudflare Turnstile (Invisible Bot Protection) -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
@@ -110,10 +110,11 @@
 
     <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-pill">
-        <span>⚡ Open Attention Market</span>
-        <span>•</span>
-        <span class="highlight">You pay, you rank.</span>
+      <div class="hero-pill" id="hero-visitor-pill">
+        <span class="ticker-pulse" style="width: 6px; height: 6px; background-color: var(--accent-success);"></span>
+        <strong id="hero-active-visitors" style="color: var(--accent-primary);">1</strong> <span>online now</span>
+        <span style="opacity: 0.4;">•</span>
+        <strong id="hero-total-visitors">1</strong> <span>total visitors</span>
       </div>
 
       <h1 class="hero-title">
@@ -130,9 +131,10 @@
         <form id="quick-submit-form">
           <div class="quick-input-row">
             <div class="quick-url-wrapper">
-              <svg class="quick-url-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <svg class="quick-url-icon" id="quick-default-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
                 <path d="M6 10L10 6M6.5 5.5L8 4C9.5 2.5 12 2.5 13.5 4C15 5.5 15 8 13.5 9.5L12 11M9.5 10.5L8 12C6.5 13.5 4 13.5 2.5 12C1 10.5 1 8 2.5 6.5L4 5"/>
               </svg>
+              <img id="quick-url-favicon" class="quick-url-favicon" src="" alt="Favicon" style="display: none;">
               <input 
                 type="text" 
                 inputmode="url"
@@ -653,6 +655,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="/js/app.js?v=2.3"></script>
+  <script src="/js/app.js?v=2.6"></script>
 </body>
 </html>

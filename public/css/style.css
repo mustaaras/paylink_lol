@@ -355,21 +355,23 @@ header {
 .hero-pill {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
   background: var(--bg-secondary);
   border: 1px solid var(--border-subtle);
   padding: 5px 14px;
   border-radius: 999px;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 550;
   color: var(--text-secondary);
   margin-bottom: 18px;
   box-shadow: var(--shadow-sm);
+  letter-spacing: -0.1px;
 }
 
-.hero-pill span.highlight {
-  color: var(--accent-primary);
+.hero-pill strong {
   font-weight: 750;
+  color: var(--text-primary);
 }
 
 .hero-title {
@@ -445,11 +447,26 @@ header {
   opacity: 0.85;
 }
 
+.quick-url-favicon {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  animation: faviconPop 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes faviconPop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 .quick-url-input {
   width: 100%;
   border: none;
   background: transparent;
-  font-size: 14.5px;
+  font-size: 16px;
   font-weight: 500;
   color: var(--text-primary);
   font-family: inherit;
@@ -2077,6 +2094,18 @@ footer {
   .preset-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 8px;
+  }
+
+  /* Prevent iPhone / iOS Safari auto-zoom on input click (requires font-size >= 16px) */
+  input,
+  select,
+  textarea,
+  .quick-url-input,
+  .form-input,
+  .form-input-inline,
+  .form-select,
+  .form-select-inline {
+    font-size: 16px !important;
   }
 }
 
