@@ -175,6 +175,7 @@ async function initTurnstile() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  initDynamicHero();
   initEventListeners();
   initQuickSubmit();
   initQueryParams();
@@ -671,6 +672,8 @@ function renderLeaderboard() {
       </div>
     `;
   }).join('');
+
+  buildRollingActivities();
 }
 
 window.focusQuickSubmit = function(cat, e) {
@@ -724,20 +727,194 @@ function updateActiveVisitors(count) {
 }
 
 /**
- * Update top ticker text
+ * Rolling Live Activities Ticker (Cycles top 10 activities with smooth slide transitions)
  */
+let rollingActivities = [];
+let activeRollIndex = 0;
+let rollTimer = null;
+let tickerRecentEvents = [];
+
+function buildRollingActivities() {
+  const list = [];
+
+  // 1. Add recent outbid/boost events
+  tickerRecentEvents.forEach(ev => {
+    list.push({
+      type: 'boost',
+      listing_id: ev.listing_id || '',
+      badge: 'BOOST',
+      badgeClass: 'style="background: var(--accent-gold); color: #000;"',
+      title: ev.title || 'Project',
+      text: `boosted by <span class="roll-price">+${formatCurrency(ev.amount || 1)}</span> for Rank #${ev.rank || 1}`
+    });
+  });
+
+  // 2. Add active ranked listings
+  allListings.forEach(item => {
+    list.push({
+      type: 'rank',
+      listing_id: item.id,
+      badge: `#${item.rank}`,
+      badgeClass: '',
+      title: item.title,
+      text: `holds Rank #${item.rank} with <span class="roll-price">${formatCurrency(item.bid_amount)}</span>`
+    });
+  });
+
+  // 3. Add dynamic platform tips
+  list.push({
+    type: 'tip',
+    badge: '⚡ TIP',
+    badgeClass: '',
+    title: 'Share your link for free',
+    text: `Instant discovery for SaaS, tools & profiles`
+  });
+  list.push({
+    type: 'battle',
+    badge: '🔥 BATTLE',
+    badgeClass: '',
+    title: 'Live Attention Battles',
+    text: `Outbid by +$1 to claim #1 on the leaderboard`
+  });
+
+  // Limit to top 10 activities
+  rollingActivities = list.slice(0, 10);
+  if (rollingActivities.length > 0) {
+    if (!rollTimer) {
+      displayCurrentRollItem(true);
+      startRollingTimer();
+    }
+  }
+}
+
+function displayCurrentRollItem(immediate = false) {
+  const el = document.getElementById('ticker-roll-item');
+  if (!el || rollingActivities.length === 0) return;
+
+  const item = rollingActivities[activeRollIndex % rollingActivities.length];
+
+  const html = `
+    <span class="roll-badge" ${item.badgeClass || ''}>${item.badge}</span>
+    <span class="roll-title">${escapeHtml(item.title)}</span>
+    <span>${item.text}</span>
+  `;
+
+  if (immediate) {
+    el.innerHTML = html;
+    el.onclick = () => item.listing_id ? scrollToListing(item.listing_id) : focusQuickSubmit(null);
+    el.className = 'ticker-roll-item';
+    return;
+  }
+
+  // Smooth slide-up transition
+  el.classList.add('roll-exit');
+  setTimeout(() => {
+    el.innerHTML = html;
+    el.onclick = () => item.listing_id ? scrollToListing(item.listing_id) : focusQuickSubmit(null);
+    el.className = 'ticker-roll-item roll-enter';
+    void el.offsetWidth; // Force reflow
+    el.className = 'ticker-roll-item';
+  }, 350);
+}
+
+function startRollingTimer() {
+  if (rollTimer) clearInterval(rollTimer);
+  rollTimer = setInterval(() => {
+    if (rollingActivities.length > 1) {
+      activeRollIndex = (activeRollIndex + 1) % rollingActivities.length;
+      displayCurrentRollItem();
+    }
+  }, 3800);
+}
+
 function updateTicker(bidData) {
-  const tickerEl = document.getElementById('ticker-message');
-  if (tickerEl && bidData) {
-    tickerEl.innerHTML = `<svg class="badge-icon" style="color: var(--accent-primary);" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5L2.5 9H8L7.5 14.5L13.5 7H8L8.5 1.5Z"/></svg> <strong>${escapeHtml(bidData.title)}</strong> boosted by <strong>+${formatCurrency(bidData.amount)}</strong> for Rank #${bidData.rank}!`;
+  if (bidData) {
+    tickerRecentEvents.unshift(bidData);
+    if (tickerRecentEvents.length > 5) tickerRecentEvents.pop();
+    buildRollingActivities();
+    activeRollIndex = 0;
+    displayCurrentRollItem(true);
+    flashTickerBadge();
   }
 }
 
 function updateTickerFromNotification(notif) {
-  const tickerEl = document.getElementById('ticker-message');
-  if (tickerEl && notif) {
-    tickerEl.innerHTML = escapeHtml(notif.message);
+  if (notif && notif.listing) {
+    tickerRecentEvents.unshift({
+      listing_id: notif.listing.id,
+      title: notif.listing.title,
+      amount: notif.bid_amount,
+      rank: notif.new_rank
+    });
+    if (tickerRecentEvents.length > 5) tickerRecentEvents.pop();
+    buildRollingActivities();
+    activeRollIndex = 0;
+    displayCurrentRollItem(true);
+    flashTickerBadge();
   }
+}
+
+function flashTickerBadge() {
+  const badge = document.getElementById('ticker-live-badge');
+  if (badge) {
+    badge.classList.remove('ticker-flash');
+    void badge.offsetWidth; // Force reflow
+    badge.classList.add('ticker-flash');
+  }
+}
+
+window.scrollToListing = function(id) {
+  if (!id) return;
+  const row = document.getElementById(`listing-${id}`);
+  if (row) {
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    row.style.transition = 'all 0.3s ease';
+    row.style.background = 'rgba(16, 185, 129, 0.12)';
+    row.style.boxShadow = '0 0 20px var(--accent-glow)';
+    setTimeout(() => {
+      row.style.background = '';
+      row.style.boxShadow = '';
+    }, 1800);
+  }
+};
+
+/**
+ * Dynamic Rotating Hero Headline
+ */
+const HERO_PHRASES = [
+  { prefix: 'You pay,', suffix: 'you rank.' },
+  { prefix: 'You share,', suffix: 'you gain.' },
+  { prefix: 'You list,', suffix: 'you win.' },
+  { prefix: 'You boost,', suffix: 'you grow.' }
+];
+
+let heroPhraseIndex = 0;
+
+function initDynamicHero() {
+  const prefixEl = document.getElementById('hero-prefix');
+  const suffixEl = document.getElementById('hero-suffix');
+  if (!prefixEl || !suffixEl) return;
+
+  setInterval(() => {
+    heroPhraseIndex = (heroPhraseIndex + 1) % HERO_PHRASES.length;
+    const nextPhrase = HERO_PHRASES[heroPhraseIndex];
+
+    prefixEl.classList.add('hero-text-exit');
+    suffixEl.classList.add('hero-text-exit');
+
+    setTimeout(() => {
+      prefixEl.innerText = nextPhrase.prefix;
+      suffixEl.innerText = nextPhrase.suffix;
+
+      prefixEl.className = 'hero-dynamic-text hero-text-enter';
+      suffixEl.className = 'gradient-text hero-dynamic-text hero-text-enter';
+
+      void prefixEl.offsetWidth; // Trigger reflow
+
+      prefixEl.className = 'hero-dynamic-text';
+      suffixEl.className = 'gradient-text hero-dynamic-text';
+    }, 160);
+  }, 2800);
 }
 
 /**

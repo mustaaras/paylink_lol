@@ -27,26 +27,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=2.9">
+  <link rel="stylesheet" href="/css/style.css?v=3.6">
   <!-- Cloudflare Turnstile (Invisible Bot Protection) -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
 <body>
   <div id="cf-turnstile-box" style="position: absolute; left: -9999px; top: -9999px;"></div>
 
-  <!-- Top Outbid Live Ticker -->
+  <!-- Top Outbid Live Ticker (Rolling Live Activity Stream) -->
   <div class="ticker-bar">
     <div class="container ticker-content">
-      <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
-        <span class="ticker-badge">
+      <div class="ticker-left-group">
+        <span class="ticker-badge" id="ticker-live-badge">
           <span class="ticker-pulse"></span>
           LIVE FEED
         </span>
-        <div class="ticker-marquee">
-          <span class="ticker-text" id="ticker-message">
-            <svg class="badge-icon" style="color: var(--accent-primary);" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5L2.5 9H8L7.5 14.5L13.5 7H8L8.5 1.5Z"/></svg>
-            Welcome to paylink.lol — You pay, you rank. Real-time attention leaderboard!
-          </span>
+        <div class="ticker-roller-box" id="ticker-roller-box">
+          <div class="ticker-roll-item" id="ticker-roll-item">
+            <span>⚡ Welcome to paylink.lol — Real-time attention leaderboard</span>
+          </div>
         </div>
       </div>
 
@@ -112,8 +111,8 @@
       </div>
 
       <h1 class="hero-title">
-        You pay, <br>
-        <span class="gradient-text">you rank.</span>
+        <span class="hero-dynamic-text" id="hero-prefix">You pay,</span><br>
+        <span class="gradient-text hero-dynamic-text" id="hero-suffix">you rank.</span>
       </h1>
 
       <p class="hero-subtitle">
@@ -244,10 +243,8 @@
           <div class="stat-value" id="stat-clicks">0</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Total Visitors</div>
-          <div class="stat-value" id="stat-visitors-card" style="color: var(--accent-success);">
-            1
-          </div>
+          <div class="stat-label">Highest Bid</div>
+          <div class="stat-value highlight" id="stat-top-bid" style="color: var(--accent-success);">$0</div>
         </div>
       </div>
     </section>
@@ -650,6 +647,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="/js/app.js?v=2.9"></script>
+  <script src="/js/app.js?v=3.6"></script>
 </body>
 </html>

@@ -146,7 +146,16 @@ body::before {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 14px;
+}
+
+.ticker-left-group {
+  display: flex;
+  align-items: center;
   gap: 12px;
+  overflow: hidden;
+  flex: 1;
+  min-width: 0;
 }
 
 .ticker-badge {
@@ -156,13 +165,14 @@ body::before {
   background: rgba(16, 185, 129, 0.1);
   color: var(--accent-primary);
   border: 1px solid rgba(16, 185, 129, 0.25);
-  padding: 2px 8px;
+  padding: 3px 9px;
   border-radius: 999px;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 11px;
   letter-spacing: 0.5px;
   text-transform: uppercase;
   flex-shrink: 0;
+  transition: all var(--transition-fast);
 }
 
 .ticker-pulse {
@@ -179,19 +189,78 @@ body::before {
   100% { transform: scale(0.9); opacity: 0.7; }
 }
 
-.ticker-marquee {
+.ticker-roller-box {
   overflow: hidden;
-  white-space: nowrap;
-  flex-grow: 1;
+  height: 28px;
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.ticker-roll-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 550;
   color: var(--text-secondary);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
 }
 
-.ticker-text {
-  display: inline-block;
-}
-
-.ticker-text strong {
+.ticker-roll-item:hover {
   color: var(--text-primary);
+}
+
+.ticker-roll-item.roll-exit {
+  transform: translateY(-16px);
+  opacity: 0;
+}
+
+.ticker-roll-item.roll-enter {
+  transform: translateY(16px);
+  opacity: 0;
+}
+
+.ticker-roll-item .roll-badge {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 11px;
+  font-weight: 750;
+  color: var(--accent-primary);
+  padding: 1px 7px;
+  border-radius: 4px;
+}
+
+.ticker-roll-item .roll-title {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.ticker-roll-item .roll-price {
+  font-family: 'Unbounded', sans-serif;
+  color: var(--accent-primary);
+  font-weight: 850;
+  font-size: 11.5px;
+}
+
+.ticker-roll-item .roll-time {
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+.ticker-flash {
+  animation: tickerFlash 0.9s ease-out;
+}
+
+@keyframes tickerFlash {
+  0% { box-shadow: 0 0 16px var(--accent-glow); transform: scale(1.04); }
+  100% { box-shadow: none; transform: scale(1); }
 }
 
 .ticker-stats {
@@ -256,6 +325,8 @@ header {
 
 .logo-svg {
   display: block;
+  height: 32px;
+  max-width: 178px;
   overflow: visible;
 }
 
@@ -383,6 +454,24 @@ header {
   margin-bottom: 16px;
   color: var(--text-primary);
   text-transform: uppercase;
+}
+
+.hero-dynamic-text {
+  display: inline-block;
+  transition: transform 0.16s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.16s ease;
+  transform: translateY(0);
+  opacity: 1;
+  will-change: transform, opacity;
+}
+
+.hero-dynamic-text.hero-text-exit {
+  transform: translateY(-8px);
+  opacity: 0;
+}
+
+.hero-dynamic-text.hero-text-enter {
+  transform: translateY(8px);
+  opacity: 0;
 }
 
 .hero-title .gradient-text {
@@ -1426,13 +1515,14 @@ header {
 }
 
 .item-price-val {
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16.5px;
-  font-weight: 750;
+  font-family: 'Unbounded', 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 16px;
+  font-weight: 850;
   color: var(--accent-primary);
-  letter-spacing: -0.3px;
+  letter-spacing: -0.5px;
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 [data-theme="dark"] .item-price-val {
@@ -2226,8 +2316,10 @@ footer {
   }
 
   .item-price-val {
-    font-size: 15.5px !important;
-    font-weight: 750 !important;
+    font-family: 'Unbounded', 'Syne', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 850 !important;
+    letter-spacing: -0.5px !important;
   }
 
   .item-description {
