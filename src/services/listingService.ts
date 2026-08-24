@@ -40,15 +40,16 @@ export class ListingService {
   static createListing(input: CreateListingInput, stripeSessionId?: string): Listing {
     const listingId = `list_${nanoid(10)}`;
     const bidId = `bid_${nanoid(10)}`;
+    const nowIso = new Date().toISOString();
 
     const insertListing = db.prepare(`
-      INSERT INTO listings (id, title, tagline, buy_url, image_url, price_tag, category, bid_amount, clicks_count)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0)
+      INSERT INTO listings (id, title, tagline, buy_url, image_url, price_tag, category, bid_amount, clicks_count, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0, ?, ?)
     `);
 
     const insertBid = db.prepare(`
-      INSERT INTO bids (id, listing_id, stripe_session_id, amount, bidder_email)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO bids (id, listing_id, stripe_session_id, amount, bidder_email, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
     `);
 
     const tx = db.transaction(() => {
@@ -60,7 +61,9 @@ export class ListingService {
         input.image_url ? input.image_url.trim() : null,
         input.price_tag ? input.price_tag.trim() : null,
         input.category,
-        input.bid_amount
+        input.bid_amount,
+        nowIso,
+        nowIso
       );
 
       insertBid.run(
@@ -68,7 +71,8 @@ export class ListingService {
         listingId,
         stripeSessionId || `dev_${nanoid(8)}`,
         input.bid_amount,
-        input.bidder_email ? input.bidder_email.trim() : null
+        input.bidder_email ? input.bidder_email.trim() : null,
+        nowIso
       );
 
       recalculateRanks();
@@ -98,15 +102,16 @@ export class ListingService {
 
     const previousRank = existing.rank;
     const bidId = `bid_${nanoid(10)}`;
+    const nowIso = new Date().toISOString();
 
     const insertBid = db.prepare(`
-      INSERT INTO bids (id, listing_id, stripe_session_id, amount, bidder_email)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO bids (id, listing_id, stripe_session_id, amount, bidder_email, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
     `);
 
     const updateListing = db.prepare(`
       UPDATE listings 
-      SET bid_amount = bid_amount + ?, updated_at = CURRENT_TIMESTAMP 
+      SET bid_amount = bid_amount + ?, updated_at = ? 
       WHERE id = ?
     `);
 
@@ -116,10 +121,11 @@ export class ListingService {
         input.listing_id,
         stripeSessionId || `dev_${nanoid(8)}`,
         input.amount,
-        input.bidder_email ? input.bidder_email.trim() : null
+        input.bidder_email ? input.bidder_email.trim() : null,
+        nowIso
       );
 
-      updateListing.run(input.amount, input.listing_id);
+      updateListing.run(input.amount, nowIso, input.listing_id);
 
       recalculateRanks();
     });

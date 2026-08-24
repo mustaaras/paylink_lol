@@ -944,7 +944,7 @@ window.openDetailsModal = function(id) {
   const domainName = getDomainFromUrl(item.buy_url);
   const minToClaim = Math.max(1, Math.floor(Number(item.bid_amount || 0)) + 1);
 
-  if (titleEl) titleEl.innerText = item.title;
+  if (titleEl) titleEl.innerText = 'Listing Details';
   if (domainEl) domainEl.innerText = domainName || 'paylink.lol';
   if (rankBadge) rankBadge.innerText = `#${item.rank}`;
   if (fullTitle) fullTitle.innerText = item.title;
@@ -1240,10 +1240,26 @@ async function loadActivityStream() {
   }
 }
 
+function parseUTCDate(dateStr) {
+  if (!dateStr) return new Date();
+  if (typeof dateStr === 'string') {
+    const trimmed = dateStr.trim();
+    if (/^\d{4}-\d{2}-\d{2}\s\d{2}:\d{2}:\d{2}/.test(trimmed)) {
+      return new Date(trimmed.replace(' ', 'T') + 'Z');
+    }
+    if (!trimmed.includes('Z') && !trimmed.includes('+')) {
+      return new Date(trimmed + 'Z');
+    }
+    return new Date(trimmed);
+  }
+  return new Date(dateStr);
+}
+
 function formatTimeAgo(dateStr) {
   if (!dateStr) return 'just now';
-  const diffSec = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diffSec < 60) return 'just now';
+  const past = parseUTCDate(dateStr).getTime();
+  const diffSec = Math.floor((Date.now() - past) / 1000);
+  if (isNaN(diffSec) || diffSec < 60) return 'just now';
   const mins = Math.floor(diffSec / 60);
   if (mins < 60) return `${mins}m ago`;
   const hours = Math.floor(mins / 60);
