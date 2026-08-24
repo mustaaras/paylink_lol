@@ -1343,10 +1343,25 @@ header {
 .item-meta {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   margin-top: 3px;
   font-size: 12.5px;
   flex-wrap: wrap;
+}
+
+.time-pill {
+  color: var(--text-muted);
+  font-weight: 550;
+  font-size: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.meta-dot {
+  color: var(--border-subtle);
+  font-size: 10px;
+  line-height: 1;
 }
 
 /* Eye-Catching Data Badges */

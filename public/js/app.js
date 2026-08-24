@@ -557,6 +557,11 @@ function renderLeaderboard() {
           <p class="item-tagline">${escapeHtml(item.tagline)}</p>
 
           <div class="item-meta">
+            <span class="time-pill" title="Added ${new Date(item.created_at).toLocaleString()}">
+              <svg class="badge-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8L10.5 9.5"/></svg>
+              ${formatTimeAgo(item.created_at)}
+            </span>
+            <span class="meta-dot">•</span>
             <span class="clicks-pill" id="clicks-${item.id}">
               <svg class="badge-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/></svg>
               <span class="clicks-num">${item.clicks_count}</span> clicks
@@ -934,10 +939,16 @@ async function loadActivityStream() {
 function formatTimeAgo(dateStr) {
   if (!dateStr) return 'just now';
   const diffSec = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
-  if (diffSec < 60) return `${Math.max(1, diffSec)}s ago`;
-  if (diffSec < 3600) return `${Math.floor(diffSec / 60)}m ago`;
-  if (diffSec < 86400) return `${Math.floor(diffSec / 3600)}h ago`;
-  return `${Math.floor(diffSec / 86400)}d ago`;
+  if (diffSec < 60) return 'just now';
+  const mins = Math.floor(diffSec / 60);
+  if (mins < 60) return `${mins}m ago`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  if (months < 12) return `${months}mo ago`;
+  return `${Math.floor(days / 365)}y ago`;
 }
 
 /**
