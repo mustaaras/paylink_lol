@@ -91,34 +91,38 @@ export class MetadataService {
 
     description = decodeHtmlEntities(description);
 
-    // Extract Image or Favicon
-    let imageUrl: string | null = null;
-    const ogImageMatch = html.match(/<meta\s+property=["']og:image["']\s+content=["'](.*?)["']/i) ||
-                         html.match(/<meta\s+content=["'](.*?)["']\s+property=["']og:image["']/i);
-    const twitterImageMatch = html.match(/<meta\s+name=["']twitter:image["']\s+content=["'](.*?)["']/i);
+    // Extract high-resolution brand favicon or logo (never og:image banner)
+    let faviconUrl: string | null = null;
 
-    if (ogImageMatch && ogImageMatch[1]) {
-      imageUrl = resolveUrl(ogImageMatch[1].trim(), cleanUrl);
-    } else if (twitterImageMatch && twitterImageMatch[1]) {
-      imageUrl = resolveUrl(twitterImageMatch[1].trim(), cleanUrl);
+    // 1. Check apple-touch-icon (highest quality square brand icon)
+    const appleIconMatch = html.match(/<link[^>]+rel=["']apple-touch-icon(?:-precomposed)?["'][^>]+href=["']([^"']+)["']/i) ||
+                           html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["']apple-touch-icon(?:-precomposed)?["']/i);
+    
+    // 2. Check SVG / PNG icon
+    const svgIconMatch = html.match(/<link[^>]+rel=["'](?:shortcut )?icon["'][^>]+type=["']image\/svg\+xml["'][^>]+href=["']([^"']+)["']/i) ||
+                         html.match(/<link[^>]+href=["']([^"']+)["'][^>]+type=["']image\/svg\+xml["'][^>]+rel=["'](?:shortcut )?icon["']/i);
+
+    const standardIconMatch = html.match(/<link[^>]+rel=["'](?:shortcut )?icon["'][^>]+href=["']([^"']+)["']/i) ||
+                              html.match(/<link[^>]+href=["']([^"']+)["'][^>]+rel=["'](?:shortcut )?icon["']/i);
+
+    if (appleIconMatch && appleIconMatch[1]) {
+      faviconUrl = resolveUrl(appleIconMatch[1].trim(), cleanUrl);
+    } else if (svgIconMatch && svgIconMatch[1]) {
+      faviconUrl = resolveUrl(svgIconMatch[1].trim(), cleanUrl);
+    } else if (standardIconMatch && standardIconMatch[1]) {
+      faviconUrl = resolveUrl(standardIconMatch[1].trim(), cleanUrl);
     }
 
-    // Best favicon/icon
-    let faviconUrl = defaultFavicon;
-    const iconMatch = html.match(/<link\s+rel=["'](?:shortcut\s+)?icon["']\s+href=["'](.*?)["']/i) ||
-                      html.match(/<link\s+href=["'](.*?)["']\s+rel=["'](?:shortcut\s+)?icon["']/i) ||
-                      html.match(/<link\s+rel=["']apple-touch-icon["']\s+href=["'](.*?)["']/i);
-
-    if (iconMatch && iconMatch[1]) {
-      const resolvedIcon = resolveUrl(iconMatch[1].trim(), cleanUrl);
-      if (resolvedIcon) faviconUrl = resolvedIcon;
+    // High-res Google Social Favicon V2 fallback if none in HTML
+    if (!faviconUrl) {
+      faviconUrl = `https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=${encodeURIComponent(cleanUrl)}&size=128`;
     }
 
     return {
       url: cleanUrl,
       title: title.substring(0, 70),
       description: description.substring(0, 140),
-      imageUrl: imageUrl || faviconUrl,
+      imageUrl: faviconUrl,
       faviconUrl: faviconUrl
     };
   }

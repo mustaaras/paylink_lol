@@ -99,7 +99,7 @@ function seedIfEmpty() {
       'DomainLiq | Premium Domain Liquidation — $59 Flat & Bulk Portfolios',
       'Direct domain liquidation marketplace for single domains at $59 flat and wholesale portfolios',
       'https://domainliq.com',
-      'https://www.google.com/s2/favicons?domain=domainliq.com&sz=128',
+      'https://domainliq.com/apple-touch-icon.png',
       '$59 flat',
       'domains-assets',
       10.00,
