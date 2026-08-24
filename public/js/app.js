@@ -637,14 +637,19 @@ function renderLeaderboard() {
         </div>
 
         <div class="item-row-content">
-          <div class="item-title-wrapper">
-            <a href="/go/${item.id}" target="_blank" rel="noopener" class="item-title">
-              ${escapeHtml(item.title)}
-            </a>
-            <!-- Floating Hover Tooltip: claim this rank for $X -->
-            <button type="button" class="claim-rank-pill" onclick="openClaimRankModal(${item.rank}, ${item.bid_amount}, '${item.id}')">
-              claim this rank for ${formatCurrency(minToClaim)}
-            </button>
+          <div class="item-header-row">
+            <div class="item-title-wrapper">
+              <a href="/go/${item.id}" target="_blank" rel="noopener" class="item-title">
+                ${escapeHtml(item.title)}
+              </a>
+              <!-- Action Pill: claim this rank for $X -->
+              <button type="button" class="claim-rank-pill" onclick="openClaimRankModal(${item.rank}, ${item.bid_amount}, '${item.id}')">
+                claim this rank for ${formatCurrency(minToClaim)}
+              </button>
+            </div>
+            <div class="item-price-col">
+              <span class="item-price-val">${formatCurrency(item.bid_amount)}</span>
+            </div>
           </div>
 
           <p class="item-description">${escapeHtml(item.tagline || '')}</p>
@@ -662,10 +667,6 @@ function renderLeaderboard() {
               see details
             </button>
           </div>
-        </div>
-
-        <div class="item-price-col">
-          <span class="item-price-val">${formatCurrency(item.bid_amount)}</span>
         </div>
       </div>
     `;
