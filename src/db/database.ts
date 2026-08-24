@@ -70,96 +70,64 @@ export function initDatabase() {
 }
 
 function seedIfEmpty() {
-  const countRow = db.prepare('SELECT COUNT(*) as count FROM listings').get() as { count: number };
-  if (countRow.count > 0) return;
-
-  const sampleListings: Array<Omit<Listing, 'rank' | 'clicks_count' | 'created_at' | 'updated_at'>> = [
-    {
-      id: 'list_promptbase_ai',
-      title: 'PromptMatrix AI',
-      tagline: 'Automated multi-agent prompt optimization engine for production LLMs',
-      buy_url: 'https://stripe.com',
-      image_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=160&q=80',
-      price_tag: '$49/mo',
-      category: 'saas',
-      bid_amount: 150.00
-    },
-    {
-      id: 'list_domain_checkout',
-      title: 'CheckoutFast.com',
-      tagline: 'Ultra-premium brandable domain for 1-click payment gateways',
-      buy_url: 'https://dan.com',
-      image_url: 'https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=160&q=80',
-      price_tag: '$2,850 buy-now',
-      category: 'domain',
-      bid_amount: 95.00
-    },
-    {
-      id: 'list_notion_bundle',
-      title: 'Solopreneur OS 2026',
-      tagline: 'Complete Notion operating system for managing 6-figure micro-SaaS & digital products',
-      buy_url: 'https://gumroad.com',
-      image_url: 'https://images.unsplash.com/photo-1507925921958-8a62f3d1a50d?auto=format&fit=crop&w=160&q=80',
-      price_tag: '$39 lifetime',
-      category: 'digital',
-      bid_amount: 60.00
-    },
-    {
-      id: 'list_design_audit',
-      title: 'SaaS UX Conversion Sprint',
-      tagline: '48-hour ruthless landing page UI/UX audit guaranteed to double checkout conversion',
-      buy_url: 'https://cal.com',
-      image_url: 'https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?auto=format&fit=crop&w=160&q=80',
-      price_tag: '$499 sprint',
-      category: 'service',
-      bid_amount: 40.00
-    },
-    {
-      id: 'list_tailwind_ui',
-      title: 'BentoGrid Pro UI Kit',
-      tagline: '60+ drop-in Tailwind CSS bento components and micro-interactions',
-      buy_url: 'https://lemonsqueezy.com',
-      image_url: 'https://images.unsplash.com/photo-1542744094-3a31f272c490?auto=format&fit=crop&w=160&q=80',
-      price_tag: '$29 copy',
-      category: 'digital',
-      bid_amount: 25.00
-    }
-  ];
-
-  const insertListing = db.prepare(`
-    INSERT INTO listings (id, title, tagline, buy_url, image_url, price_tag, category, bid_amount, clicks_count)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+  // Automatically clean up old mock seed and test items
+  db.exec(`
+    DELETE FROM bids WHERE listing_id IN (
+      SELECT id FROM listings WHERE title LIKE '%SuperMicro%' OR title LIKE '%PromptMatrix%' OR title LIKE '%API Booster%' OR title LIKE '%CheckoutFast%' OR title LIKE '%Solopreneur OS%' OR title LIKE '%SaaS UX Conversion%' OR title LIKE '%BentoGrid%'
+    );
+    DELETE FROM click_events WHERE listing_id IN (
+      SELECT id FROM listings WHERE title LIKE '%SuperMicro%' OR title LIKE '%PromptMatrix%' OR title LIKE '%API Booster%' OR title LIKE '%CheckoutFast%' OR title LIKE '%Solopreneur OS%' OR title LIKE '%SaaS UX Conversion%' OR title LIKE '%BentoGrid%'
+    );
+    DELETE FROM listings WHERE title LIKE '%SuperMicro%' OR title LIKE '%PromptMatrix%' OR title LIKE '%API Booster%' OR title LIKE '%CheckoutFast%' OR title LIKE '%Solopreneur OS%' OR title LIKE '%SaaS UX Conversion%' OR title LIKE '%BentoGrid%';
   `);
 
-  const insertBid = db.prepare(`
-    INSERT INTO bids (id, listing_id, amount, bidder_email)
-    VALUES (?, ?, ?, ?)
-  `);
+  const fakeSeedIds = ['list_promptbase_ai', 'list_domain_checkout', 'list_notion_bundle', 'list_design_audit', 'list_tailwind_ui'];
+  const placeholders = fakeSeedIds.map(() => '?').join(',');
+  db.prepare(`DELETE FROM bids WHERE listing_id IN (${placeholders})`).run(...fakeSeedIds);
+  db.prepare(`DELETE FROM click_events WHERE listing_id IN (${placeholders})`).run(...fakeSeedIds);
+  db.prepare(`DELETE FROM listings WHERE id IN (${placeholders})`).run(...fakeSeedIds);
 
-  const tx = db.transaction(() => {
-    for (const item of sampleListings) {
-      insertListing.run(
-        item.id,
-        item.title,
-        item.tagline,
-        item.buy_url,
-        item.image_url || null,
-        item.price_tag || null,
-        item.category,
-        item.bid_amount,
-        Math.floor(Math.random() * 85) + 12
-      );
+  // If domainliq doesn't exist, create it with $10 bid
+  const domainliqRow = db.prepare("SELECT id FROM listings WHERE buy_url LIKE '%domainliq.com%' OR title LIKE '%DomainLiq%'").get() as { id: string } | undefined;
+  
+  if (!domainliqRow) {
+    db.prepare(`
+      INSERT INTO listings (id, title, tagline, buy_url, image_url, price_tag, category, bid_amount, clicks_count)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      'list_domainliq',
+      'DomainLiq | Premium Domain Liquidation — $59 Flat & Bulk Portfolios',
+      'Direct domain liquidation marketplace for single domains at $59 flat and wholesale portfolios',
+      'https://domainliq.com',
+      'https://www.google.com/s2/favicons?domain=domainliq.com&sz=128',
+      '$59 flat',
+      'domains-assets',
+      10.00,
+      0
+    );
 
-      insertBid.run(
-        `bid_${item.id}_seed`,
-        item.id,
-        item.bid_amount,
-        'creator@buylink.lol'
-      );
-    }
-  });
+    db.prepare(`
+      INSERT INTO bids (id, listing_id, amount, bidder_email)
+      VALUES (?, ?, ?, ?)
+    `).run(
+      'bid_domainliq_seed',
+      'list_domainliq',
+      10.00,
+      'support@domainliq.com'
+    );
+  } else {
+    // Update existing row to clean title and $10 bid
+    db.prepare(`
+      UPDATE listings 
+      SET bid_amount = 10.00, 
+          title = 'DomainLiq | Premium Domain Liquidation — $59 Flat & Bulk Portfolios', 
+          tagline = 'Direct domain liquidation marketplace for single domains at $59 flat and wholesale portfolios', 
+          price_tag = '$59 flat', 
+          category = 'domains-assets' 
+      WHERE id = ?
+    `).run(domainliqRow.id);
+  }
 
-  tx();
   recalculateRanks();
 }
 
