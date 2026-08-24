@@ -63,6 +63,16 @@ export function initDatabase() {
     );
 
     CREATE INDEX IF NOT EXISTS idx_click_events_listing_id ON click_events(listing_id);
+
+    CREATE TABLE IF NOT EXISTS site_visits (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      ip_hash TEXT,
+      user_agent TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_site_visits_ip ON site_visits(ip_hash);
+    CREATE INDEX IF NOT EXISTS idx_site_visits_created ON site_visits(created_at);
   `);
 
   // Seed initial viral sample items if database is empty

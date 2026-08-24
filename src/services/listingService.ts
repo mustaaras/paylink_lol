@@ -177,14 +177,16 @@ export class ListingService {
     const listRow = db.prepare('SELECT COUNT(*) as count, COALESCE(MAX(bid_amount), 0) as top_bid FROM listings').get() as { count: number; top_bid: number };
     const clickRow = db.prepare('SELECT COALESCE(SUM(clicks_count), 0) as total FROM listings').get() as { total: number };
 
-    // Dynamic visitor service
+    // Persistent & dynamic visitor stats
     const activeVisitors = VisitorService.getActiveCount();
+    const totalVisitors = VisitorService.getTotalVisitorsCount();
 
     return {
       total_volume_usd: Number(volRow.total.toFixed(2)),
       total_listings: listRow.count,
       total_clicks: clickRow.total,
       top_bid: Number(listRow.top_bid.toFixed(2)),
+      total_visitors: totalVisitors,
       active_visitors: activeVisitors
     };
   }

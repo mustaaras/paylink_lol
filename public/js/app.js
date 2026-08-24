@@ -96,6 +96,16 @@ function formatCurrency(amount) {
   })}`;
 }
 
+function getDomainFromUrl(url) {
+  if (!url) return '';
+  try {
+    const parsed = new URL(url.startsWith('http') ? url : 'https://' + url);
+    return parsed.hostname.replace(/^www\./, '');
+  } catch {
+    return url.replace(/^https?:\/\//, '').split('/')[0];
+  }
+}
+
 // Vibrant monogram background gradients for cards without logos
 const monogramGradients = [
   'linear-gradient(135deg, #6366f1, #4338ca)',
@@ -124,6 +134,45 @@ function getGradientForString(str) {
   return monogramGradients[index];
 }
 
+let turnstileToken = null;
+let turnstileWidgetId = null;
+
+async function initTurnstile() {
+  try {
+    const res = await fetch('/api/config');
+    const config = await res.json();
+    const siteKey = config.turnstileSiteKey || '1x00000000000000000000AA';
+
+    function renderTurnstile() {
+      if (typeof turnstile !== 'undefined' && document.getElementById('cf-turnstile-box')) {
+        try {
+          turnstileWidgetId = turnstile.render('#cf-turnstile-box', {
+            sitekey: siteKey,
+            size: 'invisible',
+            callback: function(token) {
+              turnstileToken = token;
+            },
+            'expired-callback': function() {
+              turnstileToken = null;
+              if (typeof turnstile !== 'undefined' && turnstileWidgetId !== null) {
+                turnstile.reset(turnstileWidgetId);
+              }
+            }
+          });
+        } catch (e) {
+          console.warn('Turnstile render error:', e);
+        }
+      } else {
+        setTimeout(renderTurnstile, 250);
+      }
+    }
+
+    renderTurnstile();
+  } catch (err) {
+    console.warn('Could not init Turnstile config:', err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
   initEventListeners();
@@ -131,6 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initQueryParams();
   connectLiveFeed();
   loadLeaderboard();
+  initTurnstile();
 });
 
 /**
@@ -345,7 +395,8 @@ function initQuickSubmit() {
           price_tag: price_tag || undefined,
           category,
           bid_amount,
-          bidder_email: email || undefined
+          bidder_email: email || undefined,
+          turnstile_token: turnstileToken || undefined
         };
 
         const res = await fetch('/api/listings/create-checkout', {
@@ -488,7 +539,7 @@ async function loadLeaderboard() {
 }
 
 /**
- * Render leaderboard list with category and search filtering
+ * Render leaderboard list with category and search filtering (Matches reference design)
  */
 function renderLeaderboard() {
   const container = document.getElementById('leaderboard-list');
@@ -522,10 +573,11 @@ function renderLeaderboard() {
   }
 
   container.innerHTML = filtered.map(item => {
-    const rankClass = item.rank === 1 ? 'rank-1' : item.rank === 2 ? 'rank-2' : item.rank === 3 ? 'rank-3' : '';
     const catBadgeHtml = getCategoryBadge(item.category);
+    const domainName = getDomainFromUrl(item.buy_url);
+    const minToClaim = Math.max(1, Math.floor(Number(item.bid_amount || 0)) + 1);
 
-    // Visual Icon / Avatar
+    // Squircle Thumbnail / Monogram Icon
     let thumbHtml = '';
     if (item.image_url) {
       thumbHtml = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.parentElement.innerHTML='<div class=\\'item-monogram\\' style=\\'background: ${getGradientForString(item.title)}\\'>${getMonogram(item.title)}</div>'" />`;
@@ -534,61 +586,45 @@ function renderLeaderboard() {
       thumbHtml = `<div class="item-monogram" style="background: ${gradient}">${getMonogram(item.title)}</div>`;
     }
 
-    const xShareText = `🚀 "${item.title}" is ranked #${item.rank} on https://paylink.lol\n\nCan you outbid it?`;
-    const xShareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(xShareText)}`;
-
     return `
       <div class="item-row" id="listing-${item.id}">
-        <div class="item-icon-col">
-          <span class="rank-tag-above ${rankClass}">#${item.rank}</span>
+        <div class="item-row-left">
+          <span class="rank-num">#${item.rank}</span>
           <div class="item-thumb-wrapper">
             ${thumbHtml}
           </div>
         </div>
 
-        <div class="item-info">
-          <div class="item-header">
+        <div class="item-row-content">
+          <div class="item-title-wrapper">
             <a href="/go/${item.id}" target="_blank" rel="noopener" class="item-title">
               ${escapeHtml(item.title)}
             </a>
-            ${catBadgeHtml}
+            <!-- Floating Hover Tooltip: claim this rank for $X -->
+            <button type="button" class="claim-rank-pill" onclick="openClaimRankModal(${item.rank}, ${item.bid_amount}, '${item.id}')">
+              claim this rank for ${formatCurrency(minToClaim)}
+            </button>
           </div>
 
-          <p class="item-tagline">${escapeHtml(item.tagline)}</p>
+          <p class="item-description">${escapeHtml(item.tagline || '')}</p>
 
-          <div class="item-meta">
-            <span class="time-pill" title="Added ${new Date(item.created_at).toLocaleString()}">
-              <svg class="badge-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><path d="M8 4.5V8L10.5 9.5"/></svg>
-              ${formatTimeAgo(item.created_at)}
+          <div class="item-meta-row">
+            <span class="meta-item meta-time">${formatTimeAgo(item.created_at)}</span>
+            <a href="/go/${item.id}" target="_blank" rel="noopener" class="meta-item meta-domain">
+              ${escapeHtml(domainName)}
+            </a>
+            <span class="meta-item meta-category">${catBadgeHtml}</span>
+            <span class="meta-item meta-clicks" id="clicks-${item.id}">
+              <span class="clicks-dot">●</span> <strong>${Number(item.clicks_count || 0).toLocaleString()}</strong> clicks
             </span>
-            <span class="meta-dot">•</span>
-            <span class="clicks-pill" id="clicks-${item.id}">
-              <svg class="badge-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/></svg>
-              <span class="clicks-num">${item.clicks_count}</span> clicks
-            </span>
+            <button type="button" class="meta-item meta-details-link" onclick="openDetailsModal('${item.id}')">
+              see details
+            </button>
           </div>
         </div>
 
-        <div class="item-right-col">
-          <div class="item-bid-highlight">
-            <span class="bid-amount-text">${formatCurrency(item.bid_amount)}</span>
-            <span class="bid-badge-label">Current Bid</span>
-          </div>
-
-          <div class="item-actions">
-            <a href="${xShareUrl}" target="_blank" rel="noopener" class="card-share-btn" title="Share rank on X (Twitter)">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-              Share
-            </a>
-            <button class="btn btn-outbid btn-sm" onclick="openOutbidModal('${item.id}', '${escapeJs(item.title)}', ${item.rank}, ${item.bid_amount})">
-              <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12V4M4 8L8 4L12 8"/></svg>
-              Outbid
-            </button>
-            <a href="/go/${item.id}" target="_blank" rel="noopener" class="btn btn-buy btn-sm">
-              <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9V13H3V4H7M9 3H13V7M6 10L13 3"/></svg>
-              Open Link
-            </a>
-          </div>
+        <div class="item-price-col">
+          <span class="item-price-val">${formatCurrency(item.bid_amount)}</span>
         </div>
       </div>
     `;
@@ -621,11 +657,13 @@ function updateStats(stats) {
   const countEl = document.getElementById('stat-listings');
   const clicksEl = document.getElementById('stat-clicks');
   const topBidEl = document.getElementById('stat-top-bid');
+  const cardVisitors = document.getElementById('stat-visitors-card');
 
-  if (volEl) volEl.innerText = formatCurrency(stats.total_volume_usd);
-  if (countEl) countEl.innerText = stats.total_listings;
-  if (clicksEl) clicksEl.innerText = Number(stats.total_clicks).toLocaleString();
-  if (topBidEl) topBidEl.innerText = formatCurrency(stats.top_bid);
+  if (volEl && stats.total_volume_usd !== undefined) volEl.innerText = formatCurrency(stats.total_volume_usd);
+  if (countEl && stats.total_listings !== undefined) countEl.innerText = stats.total_listings;
+  if (clicksEl && stats.total_clicks !== undefined) clicksEl.innerText = Number(stats.total_clicks).toLocaleString();
+  if (topBidEl && stats.top_bid !== undefined) topBidEl.innerText = formatCurrency(stats.top_bid);
+  if (cardVisitors && stats.total_visitors !== undefined) cardVisitors.innerText = Number(stats.total_visitors).toLocaleString();
 
   if (stats.active_visitors !== undefined) {
     updateActiveVisitors(stats.active_visitors);
@@ -634,11 +672,9 @@ function updateStats(stats) {
 
 function updateActiveVisitors(count) {
   const tickerVisitors = document.getElementById('stat-active-visitors');
-  const cardVisitors = document.getElementById('stat-visitors-card');
   const formatted = Math.max(1, count || 1);
 
   if (tickerVisitors) tickerVisitors.innerText = formatted;
-  if (cardVisitors) cardVisitors.innerText = formatted;
 }
 
 /**
@@ -722,7 +758,274 @@ function initEventListeners() {
   if (outbidForm) {
     outbidForm.addEventListener('submit', handleOutbidSubmit);
   }
+
+  // Claim Rank Presets & Actions
+  const claimPresetMin = document.getElementById('claim-preset-min');
+  const claimPreset5 = document.getElementById('claim-preset-plus5');
+  const claimPreset10 = document.getElementById('claim-preset-plus10');
+  const claimPreset25 = document.getElementById('claim-preset-plus25');
+  const claimBidInput = document.getElementById('claim-bid-input');
+  const claimSubmitBtnText = document.getElementById('claim-submit-btn-text');
+
+  function updateClaimSubmitText() {
+    if (!claimBidInput || !claimSubmitBtnText) return;
+    const val = parseFloat(claimBidInput.value) || 0;
+    claimSubmitBtnText.innerText = `Pay & Claim Rank #${activeClaimRank} (${formatCurrency(val)})`;
+  }
+
+  if (claimPresetMin && claimBidInput) {
+    claimPresetMin.addEventListener('click', () => {
+      const min = Math.max(1, Math.floor(activeClaimBaseBid) + 1);
+      claimBidInput.value = min;
+      document.querySelectorAll('#claim-rank-modal .preset-btn').forEach(b => b.classList.remove('active'));
+      claimPresetMin.classList.add('active');
+      updateClaimSubmitText();
+    });
+  }
+
+  if (claimPreset5 && claimBidInput) {
+    claimPreset5.addEventListener('click', () => {
+      const min = Math.max(1, Math.floor(activeClaimBaseBid) + 1);
+      claimBidInput.value = min + 5;
+      document.querySelectorAll('#claim-rank-modal .preset-btn').forEach(b => b.classList.remove('active'));
+      claimPreset5.classList.add('active');
+      updateClaimSubmitText();
+    });
+  }
+
+  if (claimPreset10 && claimBidInput) {
+    claimPreset10.addEventListener('click', () => {
+      const min = Math.max(1, Math.floor(activeClaimBaseBid) + 1);
+      claimBidInput.value = min + 10;
+      document.querySelectorAll('#claim-rank-modal .preset-btn').forEach(b => b.classList.remove('active'));
+      claimPreset10.classList.add('active');
+      updateClaimSubmitText();
+    });
+  }
+
+  if (claimPreset25 && claimBidInput) {
+    claimPreset25.addEventListener('click', () => {
+      const min = Math.max(1, Math.floor(activeClaimBaseBid) + 1);
+      claimBidInput.value = min + 25;
+      document.querySelectorAll('#claim-rank-modal .preset-btn').forEach(b => b.classList.remove('active'));
+      claimPreset25.classList.add('active');
+      updateClaimSubmitText();
+    });
+  }
+
+  if (claimBidInput) {
+    claimBidInput.addEventListener('input', () => {
+      document.querySelectorAll('#claim-rank-modal .preset-btn').forEach(b => b.classList.remove('active'));
+      updateClaimSubmitText();
+    });
+  }
+
+  // Claim Modal Auto-Fetch
+  const claimFetchBtn = document.getElementById('claim-fetch-btn');
+  const claimUrlInput = document.getElementById('claim-url-input');
+  const claimTitleInput = document.getElementById('claim-title-input');
+  const claimTaglineInput = document.getElementById('claim-tagline-input');
+
+  if (claimFetchBtn && claimUrlInput) {
+    claimFetchBtn.addEventListener('click', async () => {
+      const rawUrl = claimUrlInput.value.trim();
+      if (!rawUrl) {
+        alert('Please enter a URL first');
+        claimUrlInput.focus();
+        return;
+      }
+      const targetUrl = (!rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) ? 'https://' + rawUrl : rawUrl;
+      claimUrlInput.value = targetUrl;
+      claimFetchBtn.disabled = true;
+      claimFetchBtn.innerText = 'Fetching...';
+
+      try {
+        const res = await fetch(`/api/metadata?url=${encodeURIComponent(targetUrl)}`);
+        const data = await res.json();
+        if (data.title && claimTitleInput) claimTitleInput.value = data.title;
+        if (data.description && claimTaglineInput) claimTaglineInput.value = data.description;
+      } catch (err) {
+        console.warn('Metadata fetch error:', err);
+      } finally {
+        claimFetchBtn.disabled = false;
+        claimFetchBtn.innerText = 'Auto-Fetch';
+      }
+    });
+  }
+
+  // Claim Modal Submit
+  const claimForm = document.getElementById('claim-rank-form');
+  if (claimForm) {
+    claimForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = document.getElementById('claim-submit-btn');
+      const url = document.getElementById('claim-url-input')?.value.trim();
+      const title = document.getElementById('claim-title-input')?.value.trim();
+      const tagline = document.getElementById('claim-tagline-input')?.value.trim();
+      const category = document.getElementById('claim-category-select')?.value;
+      const priceTag = document.getElementById('claim-price-input')?.value.trim();
+      const bidAmount = parseFloat(document.getElementById('claim-bid-input')?.value) || 0;
+      const email = document.getElementById('claim-email-input')?.value.trim();
+
+      if (!url || !title || !tagline || !category) {
+        alert('Please fill out all required fields.');
+        return;
+      }
+
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Preparing Checkout...';
+      }
+
+      try {
+        const res = await fetch('/api/listings/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            title,
+            tagline,
+            buy_url: url.startsWith('http') ? url : 'https://' + url,
+            category,
+            price_tag: priceTag || undefined,
+            bid_amount: bidAmount,
+            bidder_email: email || undefined,
+            turnstile_token: turnstileToken || undefined
+          })
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to create checkout session');
+
+        if (data.free) {
+          closeClaimRankModal();
+          showToast('Link listed successfully!');
+          loadLeaderboard();
+        } else if (data.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
+        }
+      } catch (err) {
+        alert(err.message || 'Error processing rank claim checkout');
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerText = `Pay & Claim Rank (${formatCurrency(bidAmount)})`;
+        }
+      }
+    });
+  }
 }
+
+let activeClaimRank = 1;
+let activeClaimBaseBid = 0;
+let activeClaimListingId = null;
+
+/**
+ * Details Modal
+ */
+window.openDetailsModal = function(id) {
+  const item = allListings.find(l => l.id === id);
+  if (!item) return;
+
+  const modal = document.getElementById('details-modal');
+  const titleEl = document.getElementById('details-title');
+  const domainEl = document.getElementById('details-domain');
+  const thumbContainer = document.getElementById('details-thumb-container');
+  const rankBadge = document.getElementById('details-rank-badge');
+  const fullTitle = document.getElementById('details-full-title');
+  const catBadge = document.getElementById('details-category-badge');
+  const descEl = document.getElementById('details-description');
+  const statRank = document.getElementById('details-stat-rank');
+  const statBid = document.getElementById('details-stat-bid');
+  const statClicks = document.getElementById('details-stat-clicks');
+  const statDate = document.getElementById('details-stat-date');
+  const claimBtn = document.getElementById('details-claim-btn');
+  const claimBtnText = document.getElementById('details-claim-btn-text');
+  const visitBtn = document.getElementById('details-visit-btn');
+
+  const domainName = getDomainFromUrl(item.buy_url);
+  const minToClaim = Math.max(1, Math.floor(Number(item.bid_amount || 0)) + 1);
+
+  if (titleEl) titleEl.innerText = item.title;
+  if (domainEl) domainEl.innerText = domainName || 'paylink.lol';
+  if (rankBadge) rankBadge.innerText = `#${item.rank}`;
+  if (fullTitle) fullTitle.innerText = item.title;
+  if (catBadge) catBadge.innerHTML = getCategoryBadge(item.category);
+  if (descEl) descEl.innerText = item.tagline || 'No additional description provided.';
+
+  if (thumbContainer) {
+    if (item.image_url) {
+      thumbContainer.innerHTML = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" class="details-thumb-img" onerror="this.parentElement.innerHTML='<div class=\\'item-monogram\\' style=\\'background: ${getGradientForString(item.title)}\\'>${getMonogram(item.title)}</div>'" />`;
+    } else {
+      thumbContainer.innerHTML = `<div class="item-monogram" style="background: ${getGradientForString(item.title)}">${getMonogram(item.title)}</div>`;
+    }
+  }
+
+  if (statRank) statRank.innerText = `#${item.rank}`;
+  if (statBid) statBid.innerText = formatCurrency(item.bid_amount);
+  if (statClicks) statClicks.innerText = Number(item.clicks_count || 0).toLocaleString();
+  if (statDate) statDate.innerText = formatTimeAgo(item.created_at);
+
+  if (claimBtn) {
+    if (claimBtnText) claimBtnText.innerText = `Claim Rank #${item.rank} for ${formatCurrency(minToClaim)}`;
+    claimBtn.onclick = () => {
+      closeDetailsModal();
+      openClaimRankModal(item.rank, item.bid_amount, item.id);
+    };
+  }
+
+  if (visitBtn) {
+    visitBtn.href = `/go/${item.id}`;
+  }
+
+  if (modal) modal.classList.add('open');
+};
+
+window.closeDetailsModal = function() {
+  const modal = document.getElementById('details-modal');
+  if (modal) modal.classList.remove('open');
+};
+
+/**
+ * Claim Rank Modal
+ */
+window.openClaimRankModal = function(rank, currentBid, listingId) {
+  activeClaimRank = rank;
+  activeClaimBaseBid = Number(currentBid) || 0;
+  activeClaimListingId = listingId;
+
+  const modal = document.getElementById('claim-rank-modal');
+  const targetPill = document.getElementById('claim-target-pill');
+  const modalTitle = document.getElementById('claim-modal-title');
+  const modalSubtitle = document.getElementById('claim-modal-subtitle');
+  const bidInput = document.getElementById('claim-bid-input');
+  const minPresetBtn = document.getElementById('claim-preset-min');
+  const submitBtnText = document.getElementById('claim-submit-btn-text');
+
+  const minBidToClaim = Math.max(1, Math.floor(activeClaimBaseBid) + 1);
+
+  if (targetPill) targetPill.innerText = `Target: Rank #${rank}`;
+  if (modalTitle) modalTitle.innerText = `Claim Rank #${rank}`;
+  if (modalSubtitle) modalSubtitle.innerText = `Current rank holder bid is ${formatCurrency(activeClaimBaseBid)}. Bid at least ${formatCurrency(minBidToClaim)} to take this position.`;
+  
+  if (bidInput) {
+    bidInput.min = minBidToClaim;
+    bidInput.value = minBidToClaim;
+  }
+  if (minPresetBtn) {
+    minPresetBtn.innerText = `Min: ${formatCurrency(minBidToClaim)}`;
+    document.querySelectorAll('#claim-rank-modal .preset-btn').forEach(b => b.classList.remove('active'));
+    minPresetBtn.classList.add('active');
+  }
+  if (submitBtnText) {
+    submitBtnText.innerText = `Pay & Claim Rank #${rank} (${formatCurrency(minBidToClaim)})`;
+  }
+
+  if (modal) modal.classList.add('open');
+};
+
+window.closeClaimRankModal = function() {
+  const modal = document.getElementById('claim-rank-modal');
+  if (modal) modal.classList.remove('open');
+};
 
 /**
  * Open Outbid Modal
@@ -775,7 +1078,8 @@ async function handleOutbidSubmit(e) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         amount,
-        bidder_email: emailInput ? emailInput.value : undefined
+        bidder_email: emailInput ? emailInput.value : undefined,
+        turnstile_token: turnstileToken || undefined
       })
     });
 

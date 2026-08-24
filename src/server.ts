@@ -9,6 +9,7 @@ import { initDatabase } from './db/database.js';
 import { ListingService } from './services/listingService.js';
 import { VisitorService } from './services/visitorService.js';
 import { StripeService, stripe } from './services/stripeService.js';
+import { TurnstileService } from './services/turnstileService.js';
 import { CreateListingInput, OutbidInput, OutbidNotification } from './types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -118,6 +119,14 @@ app.post(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Record visitor sessions in database
+app.use((req: Request, res: Response, next) => {
+  if (!req.path.startsWith('/css/') && !req.path.startsWith('/js/') && !req.path.endsWith('.svg') && !req.path.endsWith('.png') && !req.path.endsWith('.ico')) {
+    VisitorService.recordVisit(req);
+  }
+  next();
+});
+
 // Serve static frontend assets
 app.use(express.static(path.resolve(process.cwd(), 'public')));
 
@@ -136,7 +145,8 @@ app.get('/api/config', (req: Request, res: Response) => {
   res.json({
     isMock: StripeService.isMock(),
     minInitialBid: 0,
-    minOutbidIncrement: Number(process.env.MIN_OUTBID_INCREMENT || 1)
+    minOutbidIncrement: Number(process.env.MIN_OUTBID_INCREMENT || 1),
+    turnstileSiteKey: process.env.CLOUDFLARE_TURNSTILE_SITE_KEY || '1x00000000000000000000AA'
   });
 });
 
@@ -197,10 +207,18 @@ app.get('/api/ticker', (req: Request, res: Response) => {
 // Create Listing Checkout Session
 app.post('/api/listings/create-checkout', async (req: Request, res: Response) => {
   try {
-    const { title, tagline, buy_url, image_url, price_tag, category, bid_amount, bidder_email } = req.body;
+    const { title, tagline, buy_url, image_url, price_tag, category, bid_amount, bidder_email, turnstile_token } = req.body;
 
     if (!title || !tagline || !buy_url || !category || bid_amount === undefined) {
       res.status(400).json({ error: 'Missing required listing fields: title, tagline, buy_url, category, bid_amount' });
+      return;
+    }
+
+    // Verify Cloudflare Turnstile token
+    const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress;
+    const turnstileCheck = await TurnstileService.verifyToken(turnstile_token, clientIp);
+    if (!turnstileCheck.success) {
+      res.status(403).json({ error: turnstileCheck.error || 'Bot verification failed' });
       return;
     }
 
@@ -259,10 +277,18 @@ app.post('/api/listings/create-checkout', async (req: Request, res: Response) =>
 app.post('/api/listings/:id/outbid-checkout', async (req: Request, res: Response) => {
   try {
     const listingId = req.params.id as string;
-    const { amount, bidder_email } = req.body;
+    const { amount, bidder_email, turnstile_token } = req.body;
 
     if (!amount || isNaN(parseFloat(amount))) {
       res.status(400).json({ error: 'A valid numeric outbid amount is required' });
+      return;
+    }
+
+    // Verify Cloudflare Turnstile token
+    const clientIp = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress;
+    const turnstileCheck = await TurnstileService.verifyToken(turnstile_token, clientIp);
+    if (!turnstileCheck.success) {
+      res.status(403).json({ error: turnstileCheck.error || 'Bot verification failed' });
       return;
     }
 

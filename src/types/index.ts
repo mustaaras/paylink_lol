@@ -94,5 +94,6 @@ export interface LeaderboardStats {
   total_listings: number;
   total_clicks: number;
   top_bid: number;
+  total_visitors: number;
   active_visitors: number;
 }
