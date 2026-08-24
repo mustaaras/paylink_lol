@@ -654,15 +654,68 @@ function updateTickerFromNotification(notif) {
  * Event listeners setup
  */
 function initEventListeners() {
-  // Category tabs
-  const tabs = document.querySelectorAll('.tab-btn');
+  // Category tabs & See More dropdown
+  const tabs = document.querySelectorAll('.tab-btn:not(.more-cat-btn)');
+  const moreWrapper = document.getElementById('more-categories-wrapper');
+  const moreBtn = document.getElementById('more-cat-btn');
+  const moreLabel = document.getElementById('more-cat-label');
+  const moreItems = document.querySelectorAll('.more-cat-item');
+
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
       tabs.forEach(t => t.classList.remove('active'));
+      moreItems.forEach(i => i.classList.remove('active'));
+      if (moreBtn) moreBtn.classList.remove('active');
+      if (moreLabel) moreLabel.innerText = 'See More';
+      if (moreWrapper) moreWrapper.classList.remove('open');
+
       tab.classList.add('active');
       currentCategory = tab.dataset.category || 'all';
       renderLeaderboard();
     });
+  });
+
+  if (moreBtn && moreWrapper) {
+    moreBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      moreWrapper.classList.toggle('open');
+      const isOpen = moreWrapper.classList.contains('open');
+      moreBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+  }
+
+  moreItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cat = item.dataset.category;
+      tabs.forEach(t => t.classList.remove('active'));
+      moreItems.forEach(i => i.classList.remove('active'));
+      
+      item.classList.add('active');
+      if (moreBtn) moreBtn.classList.add('active');
+      const catName = categoryNames[cat] || item.querySelector('span')?.innerText || 'Category';
+      if (moreLabel) moreLabel.innerText = catName;
+      if (moreWrapper) moreWrapper.classList.remove('open');
+
+      currentCategory = cat;
+      renderLeaderboard();
+    });
+  });
+
+  // Close dropdown on outside click
+  document.addEventListener('click', (e) => {
+    if (moreWrapper && !moreWrapper.contains(e.target)) {
+      moreWrapper.classList.remove('open');
+      if (moreBtn) moreBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Close on Escape
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && moreWrapper && moreWrapper.classList.contains('open')) {
+      moreWrapper.classList.remove('open');
+      if (moreBtn) moreBtn.setAttribute('aria-expanded', 'false');
+    }
   });
 
   // Search Input
