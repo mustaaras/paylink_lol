@@ -1,0 +1,39 @@
+{
+  "name": "paylink",
+  "version": "1.0.0",
+  "description": "paylink.lol — You pay, you rank. Real-time attention leaderboard & discovery directory",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "test": "tsx tests/verify.ts"
+  },
+  "keywords": [
+    "paylink",
+    "pay-to-rank",
+    "attention-market",
+    "leaderboard",
+    "saas",
+    "discovery"
+  ],
+  "author": "paylink.lol (httpslabs)",
+  "license": "MIT",
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "nanoid": "^5.0.9",
+    "stripe": "^17.6.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.13.4",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3"
+  }
+}

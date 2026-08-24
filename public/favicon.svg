@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <defs>
+    <linearGradient id="logoEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+
+  <!-- Emerald Squircle Backdrop -->
+  <rect width="32" height="32" rx="8" fill="url(#logoEmerald)"/>
+
+  <!-- Minimal Hyperlink Chain with Small Middle Bar -->
+  <g transform="rotate(-45 16 16)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 12H23C25.2 12 27 13.8 27 16C27 18.2 25.2 20 23 20H19" stroke="#FFFFFF" fill="none"/>
+    <path d="M13 20H9C6.8 20 5 18.2 5 16C5 13.8 6.8 12 9 12H13" stroke="#A7F3D0" fill="none"/>
+    <line x1="12" y1="16" x2="20" y2="16" stroke="#FFFFFF"/>
+  </g>
+</svg>

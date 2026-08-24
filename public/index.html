@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>paylink.lol — You pay, you rank.</title>
+  <meta name="description" content="paylink.lol — You pay, you rank. The real-time attention leaderboard & link discovery directory. Share your link for free. Pay to rank higher & get discovered.">
+  <link rel="canonical" href="https://paylink.lol/">
+
+  <!-- Open Graph / Facebook / LinkedIn -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://paylink.lol/">
+  <meta property="og:site_name" content="paylink.lol">
+  <meta property="og:title" content="paylink.lol — You pay, you rank.">
+  <meta property="og:description" content="Share your link for free. Pay to rank higher & get discovered on the real-time attention leaderboard.">
+  <meta property="og:image" content="https://paylink.lol/favicon.svg">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:site" content="@mustaaras">
+  <meta name="twitter:creator" content="@mustaaras">
+  <meta name="twitter:title" content="paylink.lol — You pay, you rank.">
+  <meta name="twitter:description" content="Share your link for free. Pay to rank higher & get discovered on the real-time attention leaderboard.">
+  <meta name="twitter:image" content="https://paylink.lol/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- Top Outbid Live Ticker -->
+  <div class="ticker-bar">
+    <div class="container ticker-content">
+      <div style="display: flex; align-items: center; gap: 10px; overflow: hidden;">
+        <span class="ticker-badge">
+          <span class="ticker-pulse"></span>
+          LIVE FEED
+        </span>
+        <div class="ticker-marquee">
+          <span class="ticker-text" id="ticker-message">
+            <svg class="badge-icon" style="color: var(--accent-primary);" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5L2.5 9H8L7.5 14.5L13.5 7H8L8.5 1.5Z"/></svg>
+            Welcome to paylink.lol — You pay, you rank. Real-time attention leaderboard!
+          </span>
+        </div>
+      </div>
+
+      <div class="ticker-stats">
+        <button type="button" class="ticker-activity-btn" onclick="openActivityDrawer()" title="View Live Bids & Activity">
+          <span class="ticker-pulse" style="width: 6px; height: 6px;"></span>
+          <span>Live Battles ↗</span>
+        </button>
+        <div class="ticker-stat-item" style="display: flex; align-items: center; gap: 5px;">
+          <strong id="stat-active-visitors" style="color: var(--accent-success);">1</strong> <span>online</span>
+        </div>
+        <div class="ticker-stat-item">
+          <span>Top:</span> <strong id="stat-top-bid">$0</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header / Navbar -->
+    <header>
+      <nav class="nav-bar">
+        <a href="/" class="logo-link">
+          <svg class="logo-svg" viewBox="0 0 178 34" height="32" fill="none">
+            <defs>
+              <linearGradient id="logoEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#10B981" />
+                <stop offset="100%" stop-color="#059669" />
+              </linearGradient>
+            </defs>
+            <g transform="translate(1, 1)">
+              <rect width="32" height="32" rx="8" fill="url(#logoEmerald)"/>
+              <g transform="rotate(-45 16 16)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H23C25.2 12 27 13.8 27 16C27 18.2 25.2 20 23 20H19" stroke="#FFFFFF" fill="none"/>
+                <path d="M13 20H9C6.8 20 5 18.2 5 16C5 13.8 6.8 12 9 12H13" stroke="#A7F3D0" fill="none"/>
+                <line x1="12" y1="16" x2="20" y2="16" stroke="#FFFFFF"/>
+              </g>
+            </g>
+            <text class="logo-playful" x="44" y="24">paylink<tspan class="lol-accent">.lol</tspan></text>
+          </svg>
+        </a>
+
+        <div class="nav-actions">
+          <button id="theme-toggle-btn" class="theme-switch-btn" aria-label="Toggle Theme" title="Toggle Theme">
+            <div class="theme-switch-thumb"></div>
+            <span class="theme-icon-slot sun">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="3.2"/>
+                <path d="M8 1.5v1.5M8 13v1.5M1.5 8h1.5M13 8h1.5M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>
+              </svg>
+            </span>
+            <span class="theme-icon-slot moon">
+              <svg viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6 2C3.8 3.5 2.5 6 2.5 8.8C2.5 12.8 5.7 16 9.8 16C12.5 16 15 14.8 16.5 12.5C10.5 13 5.5 8 6 2Z"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-pill">
+        <span>⚡ Open Attention Market</span>
+        <span>•</span>
+        <span class="highlight">You pay, you rank.</span>
+      </div>
+
+      <h1 class="hero-title">
+        You pay, <br>
+        <span class="gradient-text">you rank.</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Share your link for free. Pay to rank higher & get discovered.
+      </p>
+
+      <!-- 1-Link Quick Submit Bar (Zero-friction inline submission) -->
+      <div class="quick-submit-box" id="quick-submit-section">
+        <form id="quick-submit-form">
+          <div class="quick-input-row">
+            <div class="quick-url-wrapper">
+              <svg class="quick-url-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+                <path d="M6 10L10 6M6.5 5.5L8 4C9.5 2.5 12 2.5 13.5 4C15 5.5 15 8 13.5 9.5L12 11M9.5 10.5L8 12C6.5 13.5 4 13.5 2.5 12C1 10.5 1 8 2.5 6.5L4 5"/>
+              </svg>
+              <input 
+                type="url" 
+                id="quick-url-input" 
+                class="quick-url-input" 
+                placeholder="Paste link (free to list, e.g. yourproduct.com)..." 
+                required
+                autocomplete="off"
+              >
+            </div>
+            <button type="button" id="quick-fetch-btn" class="btn btn-primary quick-fetch-btn">
+              <span id="fetch-btn-spinner" class="spinner" style="display: none;"></span>
+              <span id="fetch-btn-text">Share Link ↗</span>
+            </button>
+          </div>
+
+          <!-- Auto-Expanded Metadata Preview Card -->
+          <div class="quick-preview-panel" id="quick-preview-panel" style="display: none;">
+            <div class="preview-header">
+              <div class="preview-thumb-box">
+                <img id="preview-img" src="" alt="Favicon" class="preview-thumb" onerror="this.src='https://www.google.com/s2/favicons?domain=example.com&sz=128'">
+              </div>
+              <div class="preview-text-fields">
+                <div class="form-group-inline">
+                  <label class="inline-label">Title</label>
+                  <input type="text" id="quick-title-input" class="form-input-inline" placeholder="Project Name" required maxlength="60">
+                </div>
+                <div class="form-group-inline">
+                  <label class="inline-label">Tagline / Description</label>
+                  <input type="text" id="quick-tagline-input" class="form-input-inline" placeholder="Catchy description" required maxlength="130">
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-controls-row">
+              <div class="preview-control-item">
+                <label class="inline-label">Category</label>
+                <select id="quick-category-select" class="form-select-inline" required>
+                  <option value="ai-agents">AI Agents & Infrastructure</option>
+                  <option value="seo-ai">SEO & AI Visibility</option>
+                  <option value="marketing">Marketing & Advertising</option>
+                  <option value="crypto-web3">Crypto, Web3 & Investing</option>
+                  <option value="devtools">Developer Tools</option>
+                  <option value="business-finance">Business, Finance & Legal</option>
+                  <option value="security-privacy">Security, Privacy & Compliance</option>
+                  <option value="health-wellness">Health, Fitness & Wellness</option>
+                  <option value="social-creator">Social Media & Creator Tools</option>
+                  <option value="leaderboards">Leaderboards & Attention Markets</option>
+                  <option value="hiring-jobs">Hiring, Jobs & Careers</option>
+                  <option value="education">Education & Learning</option>
+                  <option value="agencies-services">Agencies, Studios & Services</option>
+                  <option value="ecommerce">Ecommerce & Retail</option>
+                  <option value="domains-assets">Domains & Web Assets</option>
+                  <option value="games-entertainment">Games & Entertainment</option>
+                  <option value="people-profiles">People & Profiles</option>
+                  <option value="productivity">Productivity & Personal Tools</option>
+                  <option value="design-creative">Design & Creative</option>
+                  <option value="writing-content">Writing & Content</option>
+                  <option value="directories-launch">Directories, Launch & Discovery</option>
+                  <option value="ai-media">AI Media Generation</option>
+                  <option value="audio-voice">Audio, Voice & Podcasting</option>
+                  <option value="sales-leads">Sales & Lead Generation</option>
+                  <option value="travel-lifestyle">Travel, Local & Lifestyle</option>
+                  <option value="real-estate">Real Estate & Property</option>
+                  <option value="media-news">Media & News</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div class="preview-control-item">
+                <label class="inline-label">Price Tag (Optional)</label>
+                <input type="text" id="quick-price-input" class="form-input-inline" placeholder="e.g. $29, $49/mo">
+              </div>
+
+              <div class="preview-control-item" style="grid-column: span 2;">
+                <label class="inline-label">Rank Boost (USD) — <span style="font-weight: normal; color: var(--text-muted);">$0 is Free. Higher bids rank higher.</span></label>
+                <div class="preset-inline-row">
+                  <div class="preset-pills">
+                    <button type="button" class="quick-preset-btn active" data-val="0">$0 (Free)</button>
+                    <button type="button" class="quick-preset-btn" data-val="1">+$1</button>
+                    <button type="button" class="quick-preset-btn" data-val="5">+$5</button>
+                    <button type="button" class="quick-preset-btn" data-val="10">+$10</button>
+                    <button type="button" class="quick-preset-btn" data-val="25">+$25</button>
+                  </div>
+                  <input type="number" id="quick-bid-input" class="form-input-inline quick-bid-input" min="0" step="1" value="0" required>
+                </div>
+              </div>
+            </div>
+
+            <div class="preview-submit-row">
+              <input type="email" id="quick-email-input" class="form-input-inline quick-email-input" placeholder="Email (for receipts & rank alerts)">
+              <button type="submit" id="quick-submit-action-btn" class="btn btn-primary btn-pay-now">
+                <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5L2.5 9H8L7.5 14.5L13.5 7H8L8.5 1.5Z"/></svg>
+                Pay & Rank Now ($1)
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Live Stats Grid -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Volume Paid</div>
+          <div class="stat-value highlight" id="stat-volume">$0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active paylinks</div>
+          <div class="stat-value" id="stat-listings">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Outbound Clicks</div>
+          <div class="stat-value" id="stat-clicks">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Visitors</div>
+          <div class="stat-value" style="display: flex; align-items: center; gap: 8px; color: var(--accent-success);">
+            <span class="ticker-pulse" style="width: 8px; height: 8px;"></span>
+            <span id="stat-visitors-card">1</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filter & Control Bar -->
+    <div class="controls-bar">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+          <circle cx="7" cy="7" r="5"/>
+          <path d="M11 11L14.5 14.5"/>
+        </svg>
+        <input type="text" id="leaderboard-search" class="search-input" placeholder="Search links, products, founders..." autocomplete="off">
+        <button type="button" id="search-clear-btn" class="search-clear-btn" style="display: none;" title="Clear search">&times;</button>
+      </div>
+
+      <div class="category-tabs">
+        <button class="tab-btn active" data-category="all">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="4.5" height="4.5" rx="1.2"/><rect x="9.5" y="2" width="4.5" height="4.5" rx="1.2"/><rect x="2" y="9.5" width="4.5" height="4.5" rx="1.2"/><rect x="9.5" y="9.5" width="4.5" height="4.5" rx="1.2"/></svg>
+          All
+        </button>
+        <button class="tab-btn" data-category="ai-agents">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="10" height="8" rx="2"/><circle cx="6" cy="9" r="1" fill="currentColor"/><circle cx="10" cy="9" r="1" fill="currentColor"/><path d="M8 2V5M6 2H10"/></svg>
+          AI Agents & Infrastructure
+        </button>
+        <button class="tab-btn" data-category="seo-ai">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="7" r="5"/><path d="M11 11L14.5 14.5M5 7L6.5 8.5L9.5 5.5"/></svg>
+          SEO & AI Visibility
+        </button>
+        <button class="tab-btn" data-category="marketing">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L4 6V10L12 14V2Z"/><path d="M4 8H2V11H4M14 6V10"/></svg>
+          Marketing & Advertising
+        </button>
+        <button class="tab-btn" data-category="crypto-web3">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M6 5H9.5C10.5 5 11 5.8 11 6.5C11 7.2 10.5 8 9.5 8H6M6 8H10C11 8 11.5 8.8 11.5 9.5C11.5 10.2 11 11 10 11H6M6 4V12"/></svg>
+          Crypto, Web3 & Investing
+        </button>
+        <button class="tab-btn" data-category="devtools">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 4.5L2 8L5.5 11.5M10.5 4.5L14 8L10.5 11.5M9 3L7 13"/></svg>
+          Developer Tools
+        </button>
+        <button class="tab-btn" data-category="business-finance">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2V14M4 5L8 3L12 5M2 9L4 5L6 9H2ZM10 9L12 5L14 9H10Z"/></svg>
+          Business, Finance & Legal
+        </button>
+        <button class="tab-btn" data-category="security-privacy">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5L2.5 4V8C2.5 11.5 5 14 8 15C11 14 13.5 11.5 13.5 8V4L8 1.5Z"/><path d="M5.5 8L7 9.5L10.5 6"/></svg>
+          Security, Privacy & Compliance
+        </button>
+        <button class="tab-btn" data-category="health-wellness">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 7.5C2 4.5 4.5 2.5 7 4.5C9.5 2.5 12 4.5 12 7.5C12 11 7 14 7 14C7 14 2 11 2 7.5Z"/><path d="M1 8H4L5.5 5.5L7.5 10.5L9 8H13"/></svg>
+          Health, Fitness & Wellness
+        </button>
+        <button class="tab-btn" data-category="social-creator">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="4" cy="8" r="2"/><circle cx="12" cy="4" r="2"/><circle cx="12" cy="12" r="2"/><path d="M5.8 7.1L10.2 4.9M5.8 8.9L10.2 11.1"/></svg>
+          Social Media & Creator Tools
+        </button>
+        <button class="tab-btn" data-category="leaderboards">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2H12V7C12 9.2 10.2 11 8 11C5.8 11 4 9.2 4 7V2ZM4 4H2C2 5.5 3 6.5 4 6.8M12 4H14C14 5.5 13 6.5 12 6.8M8 11V14M5 14H11"/></svg>
+          Leaderboards & Attention Markets
+        </button>
+        <button class="tab-btn" data-category="hiring-jobs">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="12" height="9" rx="2"/><path d="M5 5V3C5 2.4 5.4 2 6 2H10C10.6 2 11 2.4 11 3V5M2 8H14"/></svg>
+          Hiring, Jobs & Careers
+        </button>
+        <button class="tab-btn" data-category="education">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2L1 5.5L8 9L15 5.5L8 2ZM3.5 7.5V11.5C3.5 11.5 5.5 13.5 8 13.5C10.5 13.5 12.5 11.5 12.5 11.5V7.5M14 6V11"/></svg>
+          Education & Learning
+        </button>
+        <button class="tab-btn" data-category="agencies-services">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 8L5 4L9 7L13 3M11 8L15 12M5 12L9 8"/></svg>
+          Agencies, Studios & Services
+        </button>
+        <button class="tab-btn" data-category="ecommerce">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1H3L5 10H13L15 4H4M5 13.5C5 14.3 4.3 15 3.5 15C2.7 15 2 14.3 2 13.5M12.5 13.5C12.5 14.3 11.8 15 11 15C10.2 15 9.5 14.3 9.5 13.5"/></svg>
+          Ecommerce & Retail
+        </button>
+        <button class="tab-btn" data-category="domains-assets">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M2 8H14M8 2C9.5 4 10.5 6 10.5 8C10.5 10 9.5 12 8 14C6.5 12 5.5 10 5.5 8C5.5 6 6.5 4 8 2Z"/></svg>
+          Domains & Web Assets
+        </button>
+        <button class="tab-btn" data-category="games-entertainment">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="12" height="8" rx="3"/><path d="M4.5 8H7.5M6 6.5V9.5M10.5 7H11.5M9.5 9H10.5"/></svg>
+          Games & Entertainment
+        </button>
+        <button class="tab-btn" data-category="people-profiles">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="5" r="3"/><path d="M3 14C3 11.2 5.2 9 8 9C10.8 9 13 11.2 13 14"/></svg>
+          People & Profiles
+        </button>
+        <button class="tab-btn" data-category="productivity">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="12" rx="1.5"/><rect x="9" y="2" width="5" height="7" rx="1.5"/><rect x="9" y="11" width="5" height="3" rx="1"/></svg>
+          Productivity & Personal Tools
+        </button>
+        <button class="tab-btn" data-category="design-creative">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C4.4 1.5 1.5 4.4 1.5 8C1.5 11.6 4.4 14.5 8 14.5C9.5 14.5 10.5 13.5 10.5 12.2C10.5 11.5 10.2 11 9.8 10.5C9.4 10 9.2 9.5 9.2 9C9.2 8 10 7.2 11 7.2H12.5C13.6 7.2 14.5 6.3 14.5 5.2C14.5 3.2 11.6 1.5 8 1.5Z"/><circle cx="4.5" cy="6" r="1" fill="currentColor"/><circle cx="7" cy="4.5" r="1" fill="currentColor"/><circle cx="10" cy="5.5" r="1" fill="currentColor"/></svg>
+          Design & Creative
+        </button>
+        <button class="tab-btn" data-category="writing-content">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z"/></svg>
+          Writing & Content
+        </button>
+        <button class="tab-btn" data-category="directories-launch">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><path d="M10.5 5.5L7 7L5.5 10.5L9 9L10.5 5.5Z"/></svg>
+          Directories, Launch & Discovery
+        </button>
+        <button class="tab-btn" data-category="ai-media">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1L9.5 5.5L14 7L9.5 8.5L8 13L6.5 8.5L2 7L6.5 5.5L8 1Z"/><path d="M12.5 11.5L13.5 13.5L15.5 14L13.5 14.5L12.5 16.5L11.5 14.5L9.5 14L11.5 13.5L12.5 11.5Z"/></svg>
+          AI Media Generation
+        </button>
+        <button class="tab-btn" data-category="audio-voice">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="5.5" y="2" width="5" height="8" rx="2.5"/><path d="M3 7V8C3 10.8 5.2 13 8 13C10.8 13 13 10.8 13 8V7M8 13V15M5.5 15H10.5"/></svg>
+          Audio, Voice & Podcasting
+        </button>
+        <button class="tab-btn" data-category="sales-leads">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="3.5"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
+          Sales & Lead Generation
+        </button>
+        <button class="tab-btn" data-category="travel-lifestyle">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6C3.5 9.5 8 14.5 8 14.5C8 14.5 12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5Z"/><circle cx="8" cy="6" r="2"/></svg>
+          Travel, Local & Lifestyle
+        </button>
+        <button class="tab-btn" data-category="real-estate">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6.5L8 2L14 6.5V14H10V9H6V14H2V6.5Z"/></svg>
+          Real Estate & Property
+        </button>
+        <button class="tab-btn" data-category="media-news">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 5H11M5 8H11M5 11H8"/></svg>
+          Media & News
+        </button>
+        <button class="tab-btn" data-category="other">
+          <svg class="cat-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="5" height="5" rx="1"/><circle cx="12" cy="4.5" r="2.5"/><polygon points="8,9.5 11,14.5 5,14.5"/></svg>
+          Other
+        </button>
+      </div>
+    </div>
+
+    <!-- Leaderboard Cards Container -->
+    <main class="leaderboard-list" id="leaderboard-list">
+      <!-- Dynamically populated via app.js -->
+    </main>
+  </div>
+
+  <!-- Outbid Modal -->
+  <div class="modal-backdrop" id="outbid-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div>
+          <h2 class="modal-title">Boost & Outbid Rank</h2>
+          <p class="modal-subtitle">You pay, you rank. Add more USD to jump ranks.</p>
+        </div>
+        <button class="modal-close" onclick="closeOutbidModal()">&times;</button>
+      </div>
+
+      <div style="background: var(--bg-primary); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 14px; margin-bottom: 20px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <div id="outbid-target-title" style="font-weight: 750; font-size: 16px;">Listing Title</div>
+            <div style="color: var(--text-muted); font-size: 12px; margin-top: 2px;">Cumulative Bid: <strong id="outbid-target-total" style="color: var(--accent-gold);">$0</strong></div>
+          </div>
+          <div id="outbid-target-rank" class="rank-badge" style="width: 42px; height: 42px; font-size: 15px;">#1</div>
+        </div>
+      </div>
+
+      <form id="outbid-form">
+        <div class="form-group">
+          <label class="form-label">Boost Amount (USD) <span class="req">*</span></label>
+          <div class="preset-grid">
+            <button type="button" class="preset-btn active" data-val="1">+$1</button>
+            <button type="button" class="preset-btn" data-val="5">+$5</button>
+            <button type="button" class="preset-btn" data-val="10">+$10</button>
+            <button type="button" class="preset-btn" data-val="25">+$25</button>
+          </div>
+          <input type="number" id="outbid-amount" class="form-input" min="1" step="1" value="1" required>
+          <p class="form-hint">Every dollar adds to the total cumulative bid and recalculates real-time rank.</p>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="outbid-email">Email (Optional)</label>
+          <input type="email" id="outbid-email" class="form-input" placeholder="you@company.com">
+        </div>
+
+        <button type="submit" id="outbid-submit-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+          <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12V4M4 8L8 4L12 8"/></svg>
+          Boost & Outbid Rank
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Celebration Modal with Confetti & Share to X -->
+  <div class="modal-backdrop" id="celebrate-modal">
+    <div class="modal-box celebrate-box">
+      <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+      <button class="modal-close" onclick="closeCelebrateModal()">&times;</button>
+      <div style="text-align: center; position: relative; z-index: 2;">
+        <div class="celebrate-badge" id="celebrate-rank-badge">🏆 Rank #1</div>
+        <h2 class="celebrate-title" id="celebrate-title">You're on the Board!</h2>
+        <p class="celebrate-subtitle" id="celebrate-subtitle">Your link is now live on the real-time paylink.lol attention leaderboard.</p>
+        
+        <div class="celebrate-preview-box">
+          <div id="celebrate-item-title" style="font-family: 'Unbounded', sans-serif; font-weight: 800; font-size: 17px; color: var(--text-primary);">SuperMicro SaaS</div>
+          <div id="celebrate-item-tagline" style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">Instant micro-saas boilerplate</div>
+        </div>
+
+        <div class="celebrate-actions">
+          <a href="#" id="celebrate-share-x-btn" target="_blank" rel="noopener" class="btn btn-x-share" style="width: 100%; justify-content: center;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            Share Rank on X (Twitter)
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Battles & Activity Stream Drawer -->
+  <div class="drawer-overlay" id="activity-drawer-overlay" onclick="closeActivityDrawer()"></div>
+  <aside class="drawer" id="activity-drawer">
+    <div class="drawer-header">
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <span class="ticker-pulse"></span>
+        <h3 style="font-family: 'Unbounded', sans-serif; font-size: 15px; font-weight: 850; color: var(--text-primary);">Live Attention Battles</h3>
+      </div>
+      <button class="modal-close" onclick="closeActivityDrawer()">&times;</button>
+    </div>
+    <div class="drawer-content" id="activity-feed-list">
+      <div style="text-align: center; padding: 30px; color: var(--text-muted);">Loading activity stream...</div>
+    </div>
+  </aside>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/">Leaderboard</a>
+        <a href="#quick-submit-section" onclick="focusQuickSubmit(null, event)">Submit Link</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/privacy">Privacy Policy</a>
+      </div>
+      <p style="margin-top: 8px; font-weight: 600; color: var(--text-secondary);">You pay, you rank.</p>
+      <p style="margin-top: 4px; font-size: 12px;">© 2026 paylink.lol — Operated by <a href="https://x.com/mustaaras" target="_blank" rel="noopener" style="color: var(--text-primary); text-decoration: underline; font-weight: 600;">@mustaaras</a></p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="/js/app.js"></script>
+</body>
+</html>

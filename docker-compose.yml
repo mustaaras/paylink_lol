@@ -1,0 +1,19 @@
+services:
+  buylink:
+    build: .
+    container_name: buylink-app
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - BASE_URL=http://localhost:3000
+      - DATABASE_PATH=/app/data/buylink.db
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY:-}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET:-}
+      - DEV_MOCK_PAYMENTS=${DEV_MOCK_PAYMENTS:-true}
+    volumes:
+      - buylink-data:/app/data
+
+volumes:
+  buylink-data:

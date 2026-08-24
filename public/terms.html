@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terms of Service — paylink.lol</title>
+  <meta name="description" content="Terms of Service for paylink.lol. Free to share. Pay to rank.">
+  <link rel="canonical" href="https://paylink.lol/terms">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://paylink.lol/terms">
+  <meta property="og:title" content="Terms of Service — paylink.lol">
+  <meta property="og:description" content="Terms of Service for paylink.lol. Free to share. Pay to rank.">
+  <meta property="og:image" content="https://paylink.lol/favicon.svg">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .terms-container {
+      max-width: 800px;
+      margin: 32px auto 80px;
+      padding: 0 20px;
+    }
+    .terms-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 40px;
+      box-shadow: var(--shadow-card);
+    }
+    .terms-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .terms-title {
+      font-family: 'Unbounded', 'Syne', sans-serif;
+      font-size: 30px;
+      font-weight: 850;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+    .terms-meta {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .terms-content h2 {
+      font-family: 'Unbounded', 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+    .terms-content p, .terms-content li {
+      font-size: 14.5px;
+      line-height: 1.68;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .terms-content ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+    }
+    .terms-content li {
+      margin-bottom: 8px;
+    }
+    .terms-content a {
+      color: var(--accent-primary);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    .terms-alert {
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      margin: 20px 0;
+      color: var(--text-primary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .back-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      margin-bottom: 24px;
+      transition: color var(--transition-fast);
+    }
+    .back-nav:hover {
+      color: var(--accent-primary);
+    }
+  </style>
+</head>
+<body>
+  <!-- Header / Navbar -->
+  <header>
+    <div class="container">
+      <nav class="nav-bar">
+        <a href="/" class="logo-link">
+          <svg class="logo-svg" viewBox="0 0 178 34" height="32" fill="none">
+            <defs>
+              <linearGradient id="logoEmerald" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#10B981" />
+                <stop offset="100%" stop-color="#059669" />
+              </linearGradient>
+            </defs>
+            <g transform="translate(1, 1)">
+              <rect width="32" height="32" rx="8" fill="url(#logoEmerald)"/>
+              <g transform="rotate(-45 16 16)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H23C25.2 12 27 13.8 27 16C27 18.2 25.2 20 23 20H19" stroke="#FFFFFF" fill="none"/>
+                <path d="M13 20H9C6.8 20 5 18.2 5 16C5 13.8 6.8 12 9 12H13" stroke="#A7F3D0" fill="none"/>
+                <line x1="12" y1="16" x2="20" y2="16" stroke="#FFFFFF"/>
+              </g>
+            </g>
+            <text class="logo-playful" x="44" y="24">paylink<tspan class="lol-accent">.lol</tspan></text>
+          </svg>
+        </a>
+
+        <div class="nav-actions">
+          <button id="theme-toggle-btn" class="theme-switch-btn" aria-label="Toggle Theme" title="Toggle Theme">
+            <div class="theme-switch-thumb"></div>
+            <span class="theme-icon-slot sun">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="8" cy="8" r="3.2"/>
+                <path d="M8 1.5v1.5M8 13v1.5M1.5 8h1.5M13 8h1.5M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>
+              </svg>
+            </span>
+            <span class="theme-icon-slot moon">
+              <svg viewBox="0 0 16 16" fill="currentColor">
+                <path d="M6 2C3.8 3.5 2.5 6 2.5 8.8C2.5 12.8 5.7 16 9.8 16C12.5 16 15 14.8 16.5 12.5C10.5 13 5.5 8 6 2Z"/>
+              </svg>
+            </span>
+          </button>
+          <a href="/#quick-submit-section" class="btn btn-primary btn-sm">
+            + Submit Link
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="terms-container">
+    <a href="/" class="back-nav">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 12L6 8L10 4"/>
+      </svg>
+      Back to Leaderboard
+    </a>
+
+    <main class="terms-card">
+      <div class="terms-header">
+        <h1 class="terms-title">Terms of Service</h1>
+        <div class="terms-meta">Effective August 19, 2026. Last updated August 24, 2026.</div>
+      </div>
+
+      <div class="terms-content">
+        <p>
+          These Terms of Service ("Terms") govern access to and use of <strong>paylink.lol</strong> (the "Service"), including the public leaderboard, product links, outbid features, metadata previews, checkout, and related services.
+        </p>
+        <p>
+          By using the Service, listing a link, submitting a bid, or completing a payment, you agree to these Terms. If you do not agree, do not use the Service and do not submit or pay for a ranking.
+        </p>
+
+        <div class="terms-alert">
+          <strong>Summary:</strong> On <strong>paylink.lol</strong>, sharing a link is <strong>100% free</strong>. If you want to rank higher, you can pay to boost your position. All rank payments are final and strictly non-refundable digital placements.
+        </div>
+
+        <h2>1. Operator and Contact</h2>
+        <p>
+          The Service is operated by <strong>httpslabs</strong> ("we", "us", "our"). The Service is provided from <a href="https://paylink.lol">https://paylink.lol</a>.
+        </p>
+        <ul>
+          <li><strong>Legal, Support & Listing Notices:</strong> <a href="mailto:support@httpslabs.com">support@httpslabs.com</a></li>
+          <li><strong>Public Contact:</strong> <a href="https://x.com/mustaaras" target="_blank" rel="noopener">@mustaaras</a> on X.com</li>
+        </ul>
+
+        <h2>2. What the Service Is</h2>
+        <p>
+          <strong>paylink.lol</strong> is a real-time attention leaderboard and dynamic link discovery directory.
+        </p>
+        <ul>
+          <li><strong>Free Submissions:</strong> Any user may submit a valid destination link for <strong>$0 (Free)</strong>. Free listings enter the leaderboard at baseline placement.</li>
+          <li><strong>Paid Ranking:</strong> Users may voluntarily pay to boost a listing's cumulative bid amount to occupy a higher rank based on total USD contributed ("You pay, you rank").</li>
+          <li><strong>Sponsored Nature:</strong> Paid listings and boosted ranks are sponsored promotional placements, not editorial endorsements, reviews, or certifications.</li>
+          <li><strong>Dynamic Competition:</strong> A payment secures rank placement at the exact time of fulfillment. It does not guarantee permanent rank, traffic volume, clicks, conversions, or SEO value. Another user can pay more at any moment to leapfrog and outrank your position.</li>
+        </ul>
+
+        <h2>3. Eligibility</h2>
+        <p>
+          You must be at least 18 years old and capable of entering into a legally binding agreement. If you represent an organization or business, you warrant that you have full authorization to bind that entity.
+        </p>
+
+        <h2>4. Payments and Taxes</h2>
+        <p>
+          Checkout and payment processing are handled securely via third-party payment processors (including Stripe). We do not collect or store full payment card details. All amounts are priced and billed in US Dollars (USD). Applicable sales tax, VAT, or local duties may be applied at checkout.
+        </p>
+
+        <h2>5. Strict No-Refund Policy</h2>
+        <p>
+          <strong>All payments are final, immediate, and non-refundable.</strong>
+        </p>
+        <p>
+          Ranking placement is a real-time digital advertising service fulfilled instantly upon transaction confirmation: the bid amount is immediately credited to the cumulative balance, recalculates live leaderboard rankings, and updates public feeds.
+        </p>
+        <p>
+          The following scenarios do <strong>not</strong> qualify for a refund:
+        </p>
+        <ul>
+          <li>Being outranked or leapfrogged by another user at any point.</li>
+          <li>Receiving fewer clicks, visitors, or sales than anticipated.</li>
+          <li>Accidental or mistaken bid increments entered by the user.</li>
+          <li>Takedown or removal of a listing resulting from violation of these Terms.</li>
+          <li>Temporary downtime or network disruptions.</li>
+        </ul>
+        <p>
+          By completing checkout, you explicitly request immediate digital fulfillment and acknowledge forfeiture of statutory cooling-off withdrawal rights to the extent permissible by applicable law. Unauthorized chargebacks or fraudulent disputes constitute a breach of these Terms and may result in immediate permanent listing termination.
+        </p>
+
+        <h2>6. Legitimate Destination & Company Details</h2>
+        <p>
+          You may only list websites, projects, or profiles that you own or are authorized to promote. The target destination must represent a legitimate, functional web property with valid contact or operator information. Fake URLs, dead links, deceptive redirections, or unauthorized competitor hijackings are subject to immediate removal without refund.
+        </p>
+
+        <h2>7. Prohibited Content and Misuse</h2>
+        <p>
+          You agree not to submit listings for:
+        </p>
+        <ul>
+          <li>Adult, sexually explicit, or pornographic content.</li>
+          <li>Illegal, fraudulent, scam, phishing, malware, or deceptive offerings.</li>
+          <li>Deceptive link shorteners used to conceal destination destinations.</li>
+          <li>Infringing goods, pirated media, or counterfeit software.</li>
+          <li>Automated click manipulation, malicious scraping, or network interference.</li>
+        </ul>
+
+        <h2>8. Right of Removal & Moderation</h2>
+        <p>
+          We retain full discretion to edit, recategorize, suspend, or permanently remove any listing or bid that breaches these Terms, infringes third-party rights, or poses security or legal risks. Removal due to policy violations does not entitle the lister to a refund.
+        </p>
+
+        <h2>9. Fair Use & Third-Party Trademarks</h2>
+        <p>
+          To generate directory cards and preview metadata, <strong>paylink.lol</strong> automatically retrieves and displays publicly available metadata (titles, descriptions, favicons, open graph images). This display is strictly nominative fair use to accurately identify listed products and indicate destination targets to visitors. All external trademarks and brand logos belong to their respective owners.
+        </p>
+
+        <h2>10. Disclaimer & Limitation of Liability</h2>
+        <p>
+          The Service is provided strictly "as is" and "as available" without warranties of any kind. To the fullest extent permitted by applicable law, <strong>httpslabs</strong> and its operators shall not be liable for any indirect, incidental, punitive, or consequential damages, lost profits, or lost traffic resulting from use of the platform. Total liability for any claim shall not exceed the amount paid for the specific listing during the three (3) months preceding the claim.
+        </p>
+
+        <h2>11. Contact & Questions</h2>
+        <p>
+          For inquiries, rights notices, or listing removals, please contact:
+        </p>
+        <p>
+          Email: <a href="mailto:support@httpslabs.com">support@httpslabs.com</a><br>
+          X (Twitter): <a href="https://x.com/mustaaras" target="_blank" rel="noopener">@mustaaras</a>
+        </p>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/">Leaderboard</a>
+        <a href="/#quick-submit-section">Submit Link</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/privacy">Privacy Policy</a>
+      </div>
+      <p style="margin-top: 8px; font-weight: 600; color: var(--text-secondary);">You pay, you rank.</p>
+      <p style="margin-top: 4px; font-size: 12px;">© 2026 paylink.lol — Operated by <a href="https://x.com/mustaaras" target="_blank" rel="noopener" style="color: var(--text-primary); text-decoration: underline; font-weight: 600;">@mustaaras</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    const savedTheme = localStorage.getItem('paylink_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme') || 'light';
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('paylink_theme', next);
+      });
+    }
+  </script>
+</body>
+</html>
