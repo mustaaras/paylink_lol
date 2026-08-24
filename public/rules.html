@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Platform Rules & Guidelines — paylink.lol</title>
+  <meta name="description" content="Official platform rules and ranking guidelines for paylink.lol. How ranking works, what you can list, boosting, and moderation policies.">
+  <link rel="canonical" href="https://paylink.lol/rules">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://paylink.lol/rules">
+  <meta property="og:title" content="Platform Rules & Guidelines — paylink.lol">
+  <meta property="og:description" content="How ranking works, what you can list, boosting, and moderation policies on paylink.lol.">
+  <meta property="og:image" content="https://paylink.lol/favicon.svg">
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=2.8">
+  <style>
+    .rules-page-container {
+      max-width: 860px;
+      margin: 32px auto 80px;
+      padding: 0 20px;
+    }
+    .rules-page-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 44px;
+      box-shadow: var(--shadow-card);
+    }
+    .rules-page-header {
+      margin-bottom: 32px;
+      padding-bottom: 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      text-align: center;
+    }
+    .rules-page-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.25);
+      color: var(--accent-primary);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 750;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .rules-page-title {
+      font-family: 'Unbounded', 'Syne', sans-serif;
+      font-size: clamp(26px, 3.8vw, 36px);
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      letter-spacing: -1px;
+    }
+    .rules-page-intro {
+      font-size: 15.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .rules-section-item {
+      margin-bottom: 32px;
+    }
+    .rules-section-item h2 {
+      font-family: 'Unbounded', 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .rules-section-item p {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+    }
+    .rules-section-item p strong {
+      color: var(--text-primary);
+    }
+    .rules-highlight-box {
+      background: var(--bg-primary);
+      border-left: 3px solid var(--accent-primary);
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      padding: 16px 20px;
+      margin: 16px 0;
+      font-size: 14px;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+    .rules-highlight-box.danger {
+      border-left-color: #ef4444;
+      background: rgba(239, 68, 68, 0.05);
+    }
+    .rules-highlight-box strong {
+      color: var(--text-primary);
+    }
+    @media (max-width: 768px) {
+      .rules-page-card {
+        padding: 24px 18px;
+        border-radius: var(--radius-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Nav Bar -->
+  <header>
+    <div class="container nav-bar">
+      <a href="/" class="logo-link">
+        <svg class="logo-svg" width="130" height="34" viewBox="0 0 170 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="5" width="32" height="32" rx="10" fill="#059669"/>
+          <path d="M14 21C14 18.2386 16.2386 16 19 16H21C23.7614 16 26 18.2386 26 21C26 23.7614 23.7614 26 21 26H19C16.2386 26 14 23.7614 14 21Z" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M17 21H23" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="44" y="27" class="logo-playful">paylink<tspan fill="#059669">.lol</tspan></text>
+        </svg>
+      </a>
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <a href="/" class="btn btn-outbid" style="font-size: 12.5px; padding: 7px 12px;">← Back to Leaderboard</a>
+        <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle theme" title="Toggle theme">
+          <span class="theme-icon-slot sun">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="8" cy="8" r="3.2"/>
+              <path d="M8 1.5v1.5M8 13v1.5M1.5 8h1.5M13 8h1.5M3.4 3.4l1.1 1.1M11.5 11.5l1.1 1.1M3.4 12.6l1.1-1.1M11.5 4.5l1.1-1.1"/>
+            </svg>
+          </span>
+          <span class="theme-icon-slot moon">
+            <svg viewBox="0 0 16 16" fill="currentColor">
+              <path d="M6 2C3.8 3.5 2.5 6 2.5 8.8C2.5 12.8 5.7 16 9.8 16C12.5 16 15 14.8 16.5 12.5C10.5 13 5.5 8 6 2Z"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="rules-page-container">
+    <div class="rules-page-card">
+      <div class="rules-page-header">
+        <div class="rules-page-pill">⚡ Platform Guidelines</div>
+        <h1 class="rules-page-title">Platform Rules & Ranking</h1>
+        <p class="rules-page-intro">
+          <strong>paylink.lol</strong> is a public, real-time attention leaderboard. There are no ads, no API keys, and no revenue share. You pay to stand above everyone else. Rank is the cumulative bid — nothing else.
+        </p>
+      </div>
+
+      <div class="rules-section-item">
+        <h2>⚡ 1. How Ranking Works</h2>
+        <p>
+          Listings can be submitted for <strong>free ($0)</strong> or boosted with whole US dollars ($1 minimum increment).
+          Bids already on the board keep their amount until they raise or get outranked.
+        </p>
+        <p>
+          Taking <strong>#1</strong> costs at least <strong>$1 more</strong> than the current top bid.
+          Paying less still places you on the leaderboard at whatever rank that cumulative bid can claim.
+          Equal bids stay in the order they were placed — the older bid maintains the higher rank.
+        </p>
+        <div class="rules-highlight-box">
+          <strong>Key Rule:</strong> <code>Rank = Cumulative Bid Amount DESC, Created At ASC</code>. Rank is strictly mathematical and transparent in real time.
+        </div>
+      </div>
+
+      <div class="rules-section-item">
+        <h2>🚀 2. Boosting & Raising Existing Listings</h2>
+        <p>
+          Enter the same website URL or X @handle again to raise that listing to any target rank.
+          The new payment adds directly to your listing's all-time cumulative bid.
+        </p>
+        <p>
+          App Store, Play Store, GitHub, and similar platform links are keyed uniquely by their path, so separate projects never share a rank.
+        </p>
+      </div>
+
+      <div class="rules-section-item">
+        <h2>🛡️ 3. What You Can List</h2>
+        <p>
+          You may list any legitimate product website, SaaS app, mobile app, developer tool, newsletter, domain portfolio, or an X (@handle) creator profile.
+        </p>
+        <div class="rules-highlight-box danger">
+          <strong>Strictly Prohibited:</strong>
+          <ul style="margin: 8px 0 0 18px; padding: 0;">
+            <li>Pornography, NSFW, or sexual content of any kind.</li>
+            <li>Group chat & invite links (Telegram, WhatsApp, Discord, Signal, Messenger).</li>
+            <li>Link shorteners (bit.ly, t.co, etc.) — destination URLs must resolve to the real website.</li>
+            <li>Malicious, deceptive, or fraudulent schemes.</li>
+          </ul>
+        </div>
+        <p>
+          Query parameters (affiliate tags, tracking strings, UTM parameters) are automatically cleaned and stripped to ensure clean, direct destination links for visitors.
+        </p>
+      </div>
+
+      <div class="rules-section-item">
+        <h2>🏷️ 4. Categories & Moderation</h2>
+        <p>
+          Categories are assigned upon submission or auto-detected. If your product is listed in the wrong category, or you need updates, DM <a href="https://x.com/mustaaras" target="_blank" rel="noopener" style="color: var(--accent-primary); font-weight: 700;">@mustaaras</a> on X to have it changed immediately.
+        </p>
+      </div>
+
+      <div class="rules-section-item">
+        <h2>💳 5. Payments & Terms</h2>
+        <p>
+          Your listing is published publicly the instant payment is confirmed. Outbound clicks redirect directly to your clean target URL.
+        </p>
+        <p>
+          A completed payment claims the rank in real time. Because leaderboard rankings and exposure are delivered immediately, payments are non-refundable.
+        </p>
+        <p>
+          By participating, you agree to our <a href="/terms" style="color: var(--accent-primary); text-decoration: underline; font-weight: 600;">Terms of Service</a> and <a href="/privacy" style="color: var(--accent-primary); text-decoration: underline; font-weight: 600;">Privacy Policy</a>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-links">
+        <a href="/">Leaderboard</a>
+        <a href="/rules">Rules</a>
+        <a href="/terms">Terms of Service</a>
+        <a href="/privacy">Privacy Policy</a>
+      </div>
+      <p style="margin-top: 8px; font-weight: 600; color: var(--text-secondary);">You pay, you rank.</p>
+      <p style="margin-top: 4px; font-size: 12px;">© 2026 paylink.lol — Operated by <a href="https://x.com/mustaaras" target="_blank" rel="noopener" style="color: var(--text-primary); text-decoration: underline; font-weight: 600;">@mustaaras</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Theme switcher
+    const savedTheme = localStorage.getItem('paylink_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    document.getElementById('theme-toggle-btn')?.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = cur === 'light' ? 'dark' : 'light';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('paylink_theme', next);
+    });
+  </script>
+</body>
+</html>

@@ -138,6 +138,46 @@ function seedIfEmpty() {
     `).run(domainliqRow.id);
   }
 
+  // Ensure paylink.lol exists with $1 bid
+  const paylinkRow = db.prepare("SELECT id FROM listings WHERE buy_url LIKE '%paylink.lol%' OR title LIKE '%paylink%'").get() as { id: string } | undefined;
+  
+  if (!paylinkRow) {
+    db.prepare(`
+      INSERT INTO listings (id, title, tagline, buy_url, image_url, price_tag, category, bid_amount, clicks_count)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      'list_paylink',
+      'paylink.lol — Attention Market & Real-time Leaderboard',
+      'Share your link for free. Pay to rank higher & get discovered on the real-time attention leaderboard.',
+      'https://paylink.lol',
+      'https://paylink.lol/favicon.svg',
+      '$1 bid',
+      'leaderboards',
+      1.00,
+      0
+    );
+
+    db.prepare(`
+      INSERT INTO bids (id, listing_id, amount, bidder_email)
+      VALUES (?, ?, ?, ?)
+    `).run(
+      'bid_paylink_seed',
+      'list_paylink',
+      1.00,
+      'hello@paylink.lol'
+    );
+  } else {
+    db.prepare(`
+      UPDATE listings 
+      SET bid_amount = 1.00, 
+          title = 'paylink.lol — Attention Market & Real-time Leaderboard', 
+          tagline = 'Share your link for free. Pay to rank higher & get discovered on the real-time attention leaderboard.',
+          price_tag = '$1 bid',
+          category = 'leaderboards'
+      WHERE id = ?
+    `).run(paylinkRow.id);
+  }
+
   recalculateRanks();
 }
 

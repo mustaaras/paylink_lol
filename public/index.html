@@ -27,7 +27,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Righteous&family=Syne:wght@700;800;900&family=Unbounded:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
-  <link rel="stylesheet" href="/css/style.css?v=2.8">
+  <link rel="stylesheet" href="/css/style.css?v=2.9">
   <!-- Cloudflare Turnstile (Invisible Bot Protection) -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 </head>
@@ -55,12 +55,6 @@
           <span class="ticker-pulse" style="width: 6px; height: 6px;"></span>
           <span>Live Battles ↗</span>
         </button>
-        <div class="ticker-stat-item" style="display: flex; align-items: center; gap: 5px;">
-          <strong id="stat-active-visitors" style="color: var(--accent-success);">1</strong> <span>online</span>
-        </div>
-        <div class="ticker-stat-item">
-          <span>Top:</span> <strong id="stat-top-bid">$0</strong>
-        </div>
       </div>
     </div>
   </div>
@@ -640,88 +634,12 @@
   <!-- Toast Notification Container -->
   <div class="toast-container" id="toast-container"></div>
 
-  <!-- Rules & Platform Guidelines Section -->
-  <section class="rules-section" id="rules">
-    <div class="container">
-      <div class="rules-box">
-        <div class="rules-header">
-          <div class="rules-pill">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="badge-icon">
-              <path d="M8 1.5l1.8 3.6 4 .6-2.9 2.8.7 4-3.6-1.9-3.6 1.9.7-4-2.9-2.8 4-.6L8 1.5z"/>
-            </svg>
-            <span>Platform Rules</span>
-          </div>
-          <h2 class="rules-title">How paylink.lol Works</h2>
-          <p class="rules-intro">
-            <strong>paylink.lol</strong> is a public attention leaderboard. There are no ads, no API keys, and no algorithmic bias. You pay to stand above everyone else. Rank is the cumulative bid — nothing else.
-          </p>
-        </div>
-
-        <div class="rules-grid">
-          <div class="rule-card">
-            <div class="rule-card-header">
-              <span class="rule-icon">⚡</span>
-              <h3>How Ranking Works</h3>
-            </div>
-            <p>
-              Listings can be submitted for <strong>free ($0)</strong> or boosted with whole US dollars ($1 minimum increment).
-              Taking <strong>#1</strong> costs at least $1 more than the current top bid.
-            </p>
-            <p>
-              Paying less still puts you on the board at whatever rank that bid can take.
-              Equal bids stay in the order they were placed — the older bid keeps the higher rank.
-            </p>
-          </div>
-
-          <div class="rule-card">
-            <div class="rule-card-header">
-              <span class="rule-icon">🚀</span>
-              <h3>Boosting & Raising</h3>
-            </div>
-            <p>
-              Enter the same website or @handle again to raise that listing to any rank. The new bid adds to your total cumulative bid.
-            </p>
-            <p>
-              App Store, Play Store, GitHub, and similar platform links are keyed by their path, so different apps don't share a bid.
-            </p>
-          </div>
-
-          <div class="rule-card">
-            <div class="rule-card-header">
-              <span class="rule-icon">🛡️</span>
-              <h3>What You Can List</h3>
-            </div>
-            <p>
-              A product website, SaaS app, domain, portfolio, or an X @handle.
-            </p>
-            <p>
-              <strong>Not allowed:</strong> Porn/NSFW, sexual content, link shorteners, or group chat & invite links (Telegram, WhatsApp, Discord, Signal). Affiliate & tracking query parameters are stripped.
-            </p>
-          </div>
-
-          <div class="rule-card">
-            <div class="rule-card-header">
-              <span class="rule-icon">💳</span>
-              <h3>After You Pay</h3>
-            </div>
-            <p>
-              Your listing is live immediately. Clicks go straight to the clean URL or profile you submitted.
-            </p>
-            <p>
-              A completed payment claims the rank in real-time and is non-refundable. If your listing needs a category change, DM <a href="https://x.com/mustaaras" target="_blank" rel="noopener">@mustaaras</a> on X.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-links">
         <a href="/">Leaderboard</a>
-        <a href="#rules">Rules</a>
+        <a href="/rules">Rules</a>
         <a href="#quick-submit-section" onclick="focusQuickSubmit(null, event)">Submit Link</a>
         <a href="/terms">Terms of Service</a>
         <a href="/privacy">Privacy Policy</a>
@@ -732,6 +650,6 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="/js/app.js?v=2.8"></script>
+  <script src="/js/app.js?v=2.9"></script>
 </body>
 </html>

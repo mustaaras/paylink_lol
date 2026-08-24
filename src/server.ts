@@ -141,6 +141,11 @@ app.get('/privacy', (req: Request, res: Response) => {
   res.sendFile(path.resolve(process.cwd(), 'public', 'privacy.html'));
 });
 
+// Platform Rules page
+app.get('/rules', (req: Request, res: Response) => {
+  res.sendFile(path.resolve(process.cwd(), 'public', 'rules.html'));
+});
+
 // Admin Dashboard Page (Protected custom route)
 app.get(['/aras/admin', '/aras/admin/'], (req: Request, res: Response) => {
   res.sendFile(path.resolve(process.cwd(), 'public/admin.html'));
