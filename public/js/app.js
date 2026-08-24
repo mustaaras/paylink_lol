@@ -557,10 +557,9 @@ function renderLeaderboard() {
           <p class="item-tagline">${escapeHtml(item.tagline)}</p>
 
           <div class="item-meta">
-            ${item.price_tag ? `<span class="price-pill">${escapeHtml(item.price_tag)}</span>` : ''}
             <span class="bid-pill">
               <svg class="badge-icon" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1C8 1 9.5 3.5 9.5 5.5C9.5 6.5 9 7.2 8.5 7.8C10.5 8 12 9.5 12 11.5C12 13.5 10.2 15 8 15C5.8 15 4 13.5 4 11.5C4 9.8 5.2 8.5 6.8 8.1C6.2 7.3 6 6.5 6 5.5C6 3.5 8 1 8 1Z"/></svg>
-              ${formatCurrency(item.bid_amount)} Total Bid
+              ${formatCurrency(item.bid_amount)} Current Bid
             </span>
             <span class="clicks-pill" id="clicks-${item.id}">
               <svg class="badge-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="8" r="6"/><circle cx="8" cy="8" r="2.5" fill="currentColor"/></svg>
