@@ -142,8 +142,8 @@ app.get('/privacy', (req: Request, res: Response) => {
 });
 
 // Admin Dashboard Page (Protected custom route)
-app.get('/aras/admin', (req: Request, res: Response) => {
-  res.sendFile(path.resolve(process.cwd(), 'public', 'admin.html'));
+app.get(['/aras/admin', '/aras/admin/'], (req: Request, res: Response) => {
+  res.sendFile(path.resolve(process.cwd(), 'public/admin.html'));
 });
 
 // Admin Authentication & Helper
