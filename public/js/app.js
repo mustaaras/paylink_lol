@@ -209,6 +209,13 @@ function initQuickSubmit() {
       return;
     }
 
+    // Auto prepend https:// if protocol is missing
+    let targetUrl = url.trim();
+    if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+      targetUrl = 'https://' + targetUrl;
+      urlInput.value = targetUrl;
+    }
+
     const spinner = document.getElementById('fetch-btn-spinner');
     const btnText = document.getElementById('fetch-btn-text');
 
