@@ -11,6 +11,7 @@ import { ListingService } from './services/listingService.js';
 import { VisitorService } from './services/visitorService.js';
 import { StripeService, stripe } from './services/stripeService.js';
 import { TurnstileService } from './services/turnstileService.js';
+import { SecurityService } from './services/securityService.js';
 import { CreateListingInput, OutbidInput, OutbidNotification } from './types/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -263,6 +264,13 @@ app.get('/api/metadata', async (req: Request, res: Response) => {
     return;
   }
 
+  // Pre-validate allowed platforms (blocks chat invites)
+  const platformCheck = SecurityService.validateAllowedPlatform(url);
+  if (!platformCheck.valid) {
+    res.status(400).json({ error: platformCheck.error });
+    return;
+  }
+
   try {
     const { MetadataService } = await import('./services/metadataService.js');
     const meta = await MetadataService.fetchMetadata(url);
@@ -333,15 +341,22 @@ app.post('/api/listings/create-checkout', async (req: Request, res: Response) =>
       return;
     }
 
+    // Automated Security & Spam Guards (Shortener Unmasking, Chat Filter, Keyword Blocklist, URL Health Check)
+    const securityCheck = await SecurityService.sanitizeAndValidate(title, tagline, buy_url);
+    if (!securityCheck.valid) {
+      res.status(400).json({ error: securityCheck.error || 'Submission failed safety and spam verification.' });
+      return;
+    }
+
     const input: CreateListingInput = {
-      title,
-      tagline,
-      buy_url,
-      image_url: image_url || undefined,
-      price_tag: price_tag || undefined,
+      title: title.trim(),
+      tagline: tagline.trim(),
+      buy_url: securityCheck.finalUrl,
+      image_url: image_url ? image_url.trim() : undefined,
+      price_tag: price_tag ? price_tag.trim() : undefined,
       category,
       bid_amount: isNaN(parseFloat(bid_amount)) ? 0 : Math.max(0, parseFloat(bid_amount)),
-      bidder_email: bidder_email || undefined
+      bidder_email: bidder_email ? bidder_email.trim() : undefined
     };
 
     // Free listing ($0 bid) - publish immediately without payment
