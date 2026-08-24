@@ -659,7 +659,26 @@ function initEventListeners() {
   const moreWrapper = document.getElementById('more-categories-wrapper');
   const moreBtn = document.getElementById('more-cat-btn');
   const moreLabel = document.getElementById('more-cat-label');
+  const moreDropdown = document.getElementById('more-categories-dropdown');
   const moreItems = document.querySelectorAll('.more-cat-item');
+
+  function closeMoreDropdown() {
+    if (moreWrapper) moreWrapper.classList.remove('open');
+    if (moreDropdown) moreDropdown.style.display = 'none';
+    if (moreBtn) moreBtn.setAttribute('aria-expanded', 'false');
+  }
+
+  function toggleMoreDropdown() {
+    if (!moreWrapper || !moreDropdown) return;
+    const willOpen = moreDropdown.style.display === 'none' || !moreWrapper.classList.contains('open');
+    if (willOpen) {
+      moreWrapper.classList.add('open');
+      moreDropdown.style.display = 'block';
+    } else {
+      closeMoreDropdown();
+    }
+    if (moreBtn) moreBtn.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+  }
 
   tabs.forEach(tab => {
     tab.addEventListener('click', () => {
@@ -667,7 +686,7 @@ function initEventListeners() {
       moreItems.forEach(i => i.classList.remove('active'));
       if (moreBtn) moreBtn.classList.remove('active');
       if (moreLabel) moreLabel.innerText = 'See More';
-      if (moreWrapper) moreWrapper.classList.remove('open');
+      closeMoreDropdown();
 
       tab.classList.add('active');
       currentCategory = tab.dataset.category || 'all';
@@ -678,9 +697,7 @@ function initEventListeners() {
   if (moreBtn && moreWrapper) {
     moreBtn.addEventListener('click', (e) => {
       e.stopPropagation();
-      moreWrapper.classList.toggle('open');
-      const isOpen = moreWrapper.classList.contains('open');
-      moreBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      toggleMoreDropdown();
     });
   }
 
@@ -695,7 +712,7 @@ function initEventListeners() {
       if (moreBtn) moreBtn.classList.add('active');
       const catName = categoryNames[cat] || item.querySelector('span')?.innerText || 'Category';
       if (moreLabel) moreLabel.innerText = catName;
-      if (moreWrapper) moreWrapper.classList.remove('open');
+      closeMoreDropdown();
 
       currentCategory = cat;
       renderLeaderboard();
@@ -705,16 +722,14 @@ function initEventListeners() {
   // Close dropdown on outside click
   document.addEventListener('click', (e) => {
     if (moreWrapper && !moreWrapper.contains(e.target)) {
-      moreWrapper.classList.remove('open');
-      if (moreBtn) moreBtn.setAttribute('aria-expanded', 'false');
+      closeMoreDropdown();
     }
   });
 
   // Close on Escape
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && moreWrapper && moreWrapper.classList.contains('open')) {
-      moreWrapper.classList.remove('open');
-      if (moreBtn) moreBtn.setAttribute('aria-expanded', 'false');
+    if (e.key === 'Escape') {
+      closeMoreDropdown();
     }
   });
 
