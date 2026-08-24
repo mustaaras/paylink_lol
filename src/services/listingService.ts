@@ -198,7 +198,54 @@ export class ListingService {
   }
 
   /**
-   * Get recent outbids for the live ticker
+   * Admin: Update listing details (category, title, URL, etc.)
+   */
+  static updateListingAdmin(id: string, data: Partial<Listing>): Listing | null {
+    const existing = this.getListingById(id);
+    if (!existing) return null;
+
+    const title = data.title !== undefined ? data.title.trim() : existing.title;
+    const tagline = data.tagline !== undefined ? data.tagline.trim() : existing.tagline;
+    const buy_url = data.buy_url !== undefined ? data.buy_url.trim() : existing.buy_url;
+    const category = data.category !== undefined ? data.category : existing.category;
+    const image_url = data.image_url !== undefined ? (data.image_url ? data.image_url.trim() : null) : existing.image_url;
+    const price_tag = data.price_tag !== undefined ? (data.price_tag ? data.price_tag.trim() : null) : existing.price_tag;
+    const bid_amount = data.bid_amount !== undefined ? Math.max(0, Number(data.bid_amount)) : existing.bid_amount;
+    const nowIso = new Date().toISOString();
+
+    const updateStmt = db.prepare(`
+      UPDATE listings
+      SET title = ?, tagline = ?, buy_url = ?, category = ?, image_url = ?, price_tag = ?, bid_amount = ?, updated_at = ?
+      WHERE id = ?
+    `);
+
+    db.transaction(() => {
+      updateStmt.run(title, tagline, buy_url, category, image_url, price_tag, bid_amount, nowIso, id);
+      recalculateRanks();
+    })();
+
+    return this.getListingById(id);
+  }
+
+  /**
+   * Admin: Permanently delete a listing and its related bids & clicks
+   */
+  static deleteListingAdmin(id: string): boolean {
+    const existing = this.getListingById(id);
+    if (!existing) return false;
+
+    db.transaction(() => {
+      db.prepare('DELETE FROM click_events WHERE listing_id = ?').run(id);
+      db.prepare('DELETE FROM bids WHERE listing_id = ?').run(id);
+      db.prepare('DELETE FROM listings WHERE id = ?').run(id);
+      recalculateRanks();
+    })();
+
+    return true;
+  }
+
+  /**
+   * Get recent outbids for the live ticker and admin feeds
    */
   static getRecentOutbids(limit = 10) {
     const stmt = db.prepare(`

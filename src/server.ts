@@ -3,6 +3,7 @@ dotenv.config();
 
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { initDatabase } from './db/database.js';
@@ -138,6 +139,105 @@ app.get('/terms', (req: Request, res: Response) => {
 // Privacy Policy page
 app.get('/privacy', (req: Request, res: Response) => {
   res.sendFile(path.resolve(process.cwd(), 'public', 'privacy.html'));
+});
+
+// Admin Dashboard Page (Protected custom route)
+app.get('/aras/admin', (req: Request, res: Response) => {
+  res.sendFile(path.resolve(process.cwd(), 'public', 'admin.html'));
+});
+
+// Admin Authentication & Helper
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'paylink_admin_2026';
+function getExpectedAdminToken() {
+  return crypto.createHmac('sha256', ADMIN_PASSWORD).update('paylink_admin_session').digest('hex');
+}
+
+function requireAdmin(req: Request, res: Response, next: () => void) {
+  const authHeader = req.headers.authorization;
+  const token = authHeader && authHeader.startsWith('Bearer ') ? authHeader.substring(7) : (req.headers['x-admin-token'] as string);
+  const expectedToken = getExpectedAdminToken();
+
+  if (token === expectedToken || req.headers['x-admin-password'] === ADMIN_PASSWORD) {
+    next();
+  } else {
+    res.status(401).json({ error: 'Unauthorized: Invalid Admin Password/Token' });
+  }
+}
+
+// Admin: Login
+app.post('/api/admin/login', (req: Request, res: Response) => {
+  const { password } = req.body;
+  if (!password || password !== ADMIN_PASSWORD) {
+    res.status(401).json({ error: 'Invalid password' });
+    return;
+  }
+  const token = getExpectedAdminToken();
+  res.json({ success: true, token });
+});
+
+// Admin: Get all listings
+app.get('/api/admin/listings', requireAdmin, (req: Request, res: Response) => {
+  const listings = ListingService.getListings();
+  res.json(listings);
+});
+
+// Admin: Update a listing (category, title, URL, etc.)
+app.put('/api/admin/listings/:id', requireAdmin, (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const updated = ListingService.updateListingAdmin(id, req.body);
+  if (!updated) {
+    res.status(404).json({ error: 'Listing not found' });
+    return;
+  }
+
+  broadcastSSE('leaderboard_update', {
+    listings: ListingService.getListings(),
+    stats: ListingService.getStats(),
+    notification: {
+      type: 'rank_change',
+      timestamp: new Date().toISOString(),
+      listing: updated,
+      previous_rank: updated.rank,
+      new_rank: updated.rank,
+      bid_amount: updated.bid_amount,
+      message: `Listing "${updated.title}" updated by admin.`
+    }
+  });
+
+  res.json({ success: true, listing: updated });
+});
+
+// Admin: Delete / Moderate a listing
+app.delete('/api/admin/listings/:id', requireAdmin, (req: Request, res: Response) => {
+  const id = req.params.id as string;
+  const deleted = ListingService.deleteListingAdmin(id);
+  if (!deleted) {
+    res.status(404).json({ error: 'Listing not found' });
+    return;
+  }
+
+  broadcastSSE('leaderboard_update', {
+    listings: ListingService.getListings(),
+    stats: ListingService.getStats(),
+    notification: {
+      type: 'rank_change',
+      timestamp: new Date().toISOString(),
+      listing: undefined as any,
+      previous_rank: 0,
+      new_rank: 0,
+      bid_amount: 0,
+      message: `A listing was moderated/removed.`
+    }
+  });
+
+  res.json({ success: true });
+});
+
+// Admin: Get extended system stats
+app.get('/api/admin/stats', requireAdmin, (req: Request, res: Response) => {
+  const stats = ListingService.getStats();
+  const recentBids = ListingService.getRecentOutbids(50);
+  res.json({ stats, recentBids });
 });
 
 // Configuration info for frontend
