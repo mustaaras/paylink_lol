@@ -316,14 +316,21 @@ body::before {
 }
 
 /* Header & Nav */
-header {
-  padding: 20px 0 12px;
+header,
+.main-header {
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 20px 36px 12px;
+  position: relative;
+  z-index: 10;
 }
 
 .nav-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .logo-link {
@@ -2113,6 +2120,11 @@ footer {
 @media (max-width: 768px) {
   .ticker-bar {
     padding: 8px 16px;
+  }
+
+  header,
+  .main-header {
+    padding: 16px 16px 10px;
   }
 
   .container {
