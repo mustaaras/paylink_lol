@@ -2244,9 +2244,15 @@ footer {
     padding: 24px 0 32px;
   }
 
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+  }
+
   .hero-map-container {
-    top: -5px;
-    min-height: 290px;
+    top: 0;
+    height: 100%;
+    min-height: 480px;
     opacity: 0.9;
   }
 
@@ -2255,20 +2261,35 @@ footer {
   }
 
   .hero-title {
+    order: 1;
     font-size: 38px;
     line-height: 1.12;
     letter-spacing: -1px;
   }
 
   .hero-subtitle {
+    order: 2;
     font-size: 15px;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
 
   /* Quick Submit Mobile */
   .quick-submit-box {
+    order: 3;
     padding: 14px;
     border-radius: var(--radius-lg);
+    margin-bottom: 16px;
+  }
+
+  /* Online visitor pill under paste box on mobile */
+  .hero-pill#hero-visitor-pill {
+    order: 4;
+    align-self: center;
+    margin: 0 auto 24px auto;
+  }
+
+  .stats-grid {
+    order: 5;
   }
 
   .quick-input-row {

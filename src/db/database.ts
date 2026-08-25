@@ -68,12 +68,24 @@ export function initDatabase() {
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       ip_hash TEXT,
       user_agent TEXT,
+      lat REAL,
+      lng REAL,
+      city TEXT,
+      country TEXT,
+      country_code TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
 
     CREATE INDEX IF NOT EXISTS idx_site_visits_ip ON site_visits(ip_hash);
     CREATE INDEX IF NOT EXISTS idx_site_visits_created ON site_visits(created_at);
   `);
+
+  // Safe schema migrations for existing databases
+  try { db.exec('ALTER TABLE site_visits ADD COLUMN lat REAL'); } catch {}
+  try { db.exec('ALTER TABLE site_visits ADD COLUMN lng REAL'); } catch {}
+  try { db.exec('ALTER TABLE site_visits ADD COLUMN city TEXT'); } catch {}
+  try { db.exec('ALTER TABLE site_visits ADD COLUMN country TEXT'); } catch {}
+  try { db.exec('ALTER TABLE site_visits ADD COLUMN country_code TEXT'); } catch {}
 
   // Seed initial viral sample items if database is empty
   seedIfEmpty();

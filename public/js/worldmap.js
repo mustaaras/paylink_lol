@@ -175,33 +175,21 @@
     }
 
     /**
-     * Get 3D Globe position & radius dynamically centered behind Hero Title, above paste box
+     * Get 3D Globe position & radius centered behind the Hero Title (guaranteed 100% in-frame)
      */
     get3DGlobeMetrics() {
       const cx = this.width / 2;
       const titleEl = document.querySelector('.hero-title');
-      const submitBox = document.getElementById('quick-submit-section');
+      const radius = Math.min(this.width * 0.28, 90);
 
-      // Top position: perfectly centered behind the Hero Title & Pill, safely above the paste box
-      let cy = 105;
+      let cy = radius + 10;
       if (titleEl && this.container) {
         const containerRect = this.container.getBoundingClientRect();
         const titleRect = titleEl.getBoundingClientRect();
-        cy = (titleRect.top - containerRect.top) + titleRect.height * 0.45;
+        const titleCenter = (titleRect.top - containerRect.top) + titleRect.height * 0.48;
+        cy = Math.max(radius + 10, titleCenter);
       }
 
-      // Radius scaled nicely so it frames the title without getting cut by the submit box
-      let maxRadius = 105;
-      if (submitBox && this.container) {
-        const containerRect = this.container.getBoundingClientRect();
-        const submitRect = submitBox.getBoundingClientRect();
-        const availableHeight = (submitRect.top - containerRect.top) - cy;
-        if (availableHeight > 30) {
-          maxRadius = Math.min(maxRadius, availableHeight - 4);
-        }
-      }
-
-      const radius = Math.min(this.width * 0.30, Math.max(70, maxRadius));
       return { cx, cy, radius };
     }
 
@@ -228,7 +216,7 @@
         x: cx + x3d,
         y: cy + yTilted,
         z: zTilted,
-        visible: zTilted > -radius * 0.15, // Visible on front / slightly translucent edge
+        visible: zTilted > -radius * 0.15,
         isFront: zTilted > 0
       };
     }
@@ -249,7 +237,7 @@
       const rect = this.container.getBoundingClientRect();
       this.width = rect.width;
       const isMobile = this.isMobileLayout();
-      this.height = Math.max(isMobile ? 320 : 380, rect.height || 400);
+      this.height = Math.max(isMobile ? 520 : 380, rect.height || 420);
 
       this.dpr = Math.min(window.devicePixelRatio || 1, 2);
       this.canvas.width = Math.floor(this.width * this.dpr);
@@ -466,20 +454,27 @@
     }
 
     /**
-     * Render Minimalist Clean 3D Rotating Globe (No heavy glows or backdrop discs)
+     * Render Minimalist Clean 3D Rotating Globe (Full 360° spherical visibility)
      */
     draw3DGlobe(ctx, isDark, t) {
       const { cx, cy, radius } = this.get3DGlobeMetrics();
 
-      // 1. Clean 3D Rotating Continents Dot Matrix
-      const defaultDotColor = isDark ? 'rgba(255, 255, 255, 0.22)' : 'rgba(15, 23, 42, 0.22)';
+      // 1. Subtle Globe Boundary Circle & Rotating Equator Line
+      ctx.lineWidth = 1;
+      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.09)' : 'rgba(0, 0, 0, 0.09)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // 2. 3D Rotating Continents (Both Front & Translucent Back for Full Sphere View)
+      const frontDotColor = isDark ? 'rgba(255, 255, 255, 0.32)' : 'rgba(15, 23, 42, 0.35)';
+      const backDotColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)';
       const activeDotColor = isDark ? '#10b981' : '#059669';
 
       for (let i = 0; i < this.landDots.length; i++) {
         const dot = this.landDots[i];
         const pt = this.geoTo3D(dot.lat, dot.lng);
 
-        // Only draw visible front-facing dots
         if (pt.isFront) {
           let isNearNode = false;
           for (const loc of this.locations) {
@@ -490,9 +485,15 @@
             }
           }
 
-          ctx.fillStyle = isNearNode ? activeDotColor : defaultDotColor;
+          ctx.fillStyle = isNearNode ? activeDotColor : frontDotColor;
           ctx.beginPath();
-          ctx.arc(pt.x, pt.y, isNearNode ? 1.5 : 1.2, 0, Math.PI * 2);
+          ctx.arc(pt.x, pt.y, isNearNode ? 1.6 : 1.3, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          // Translucent back hemisphere dot so full 360° globe is visible
+          ctx.fillStyle = backDotColor;
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 0.9, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -525,34 +526,40 @@
         ctx.fill();
       }
 
-      // 3. Clean Visitor Beacons
+      // 3. Clean Visitor Beacons (Front & Translucent Back for complete 360° awareness)
       for (let i = 0; i < this.locations.length; i++) {
         const loc = this.locations[i];
         const pt = this.geoTo3D(loc.lat, loc.lng);
-        if (!pt.isFront) continue;
-
         const phase = (t + (loc.phase || 0)) % 1;
 
-        // Subtle radar ripple ring
-        const r = 3 + phase * 14;
-        const alpha = (1 - phase) * 0.7;
+        if (pt.isFront) {
+          // Front side: expanding ripple + glowing core
+          const r = 3 + phase * 14;
+          const alpha = (1 - phase) * 0.75;
 
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
-        ctx.strokeStyle = isDark ? `rgba(16, 185, 129, ${alpha})` : `rgba(5, 150, 105, ${alpha})`;
-        ctx.lineWidth = 1.2;
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, r, 0, Math.PI * 2);
+          ctx.strokeStyle = isDark ? `rgba(16, 185, 129, ${alpha})` : `rgba(5, 150, 105, ${alpha})`;
+          ctx.lineWidth = 1.2;
+          ctx.stroke();
 
-        // Pin Core
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = isDark ? '#10b981' : '#059669';
-        ctx.fill();
+          // Pin Core
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 3.2, 0, Math.PI * 2);
+          ctx.fillStyle = isDark ? '#10b981' : '#059669';
+          ctx.fill();
 
-        ctx.beginPath();
-        ctx.arc(pt.x, pt.y, 1.2, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+        } else {
+          // Back side: subtle green beacon visible through the glass matrix
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, 2, 0, Math.PI * 2);
+          ctx.fillStyle = isDark ? 'rgba(16, 185, 129, 0.3)' : 'rgba(5, 150, 105, 0.35)';
+          ctx.fill();
+        }
       }
     }
 

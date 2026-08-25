@@ -206,42 +206,81 @@ export class VisitorService {
   }
 
   /**
-   * Get active online visitors count based on rolling 1-hour window and active connections
+   * Get active online visitors count based on rolling 1-hour window, database logs, and active connections
    */
   static getActiveCount(): number {
     const now = Date.now();
-    let count = 0;
+    let memoryCount = 0;
 
     for (const [ipHash, timestamp] of this.activeVisitorsMap.entries()) {
       if (now - timestamp <= this.ACTIVE_WINDOW_MS) {
-        count++;
+        memoryCount++;
       } else {
         this.activeVisitorsMap.delete(ipHash);
         this.activeLocationsMap.delete(ipHash);
       }
     }
 
-    return Math.max(1, count, this.activeClients.size);
+    try {
+      // Query unique active visitors in SQLite from the last 1 hour
+      const row = db.prepare("SELECT COUNT(DISTINCT ip_hash) as count FROM site_visits WHERE created_at >= datetime('now', '-1 hour')").get() as { count: number };
+      const dbCount = row ? row.count : 0;
+      return Math.max(1, memoryCount, dbCount, this.activeClients.size);
+    } catch {
+      return Math.max(1, memoryCount, this.activeClients.size);
+    }
   }
 
   /**
-   * Get active online visitor geographical locations aggregated for map rendering
+   * Get all active online visitor geographical locations from the last 1 hour
    */
   static getActiveLocations(): VisitorLocation[] {
     const now = Date.now();
-    const activeLocations: VisitorLocation[] = [];
+    const locationsMap = new Map<string, VisitorLocation>();
 
-    // Clean up expired locations and collect active ones
+    // 1. Collect in-memory active visitor locations from the last 1 hour
     for (const [ipHash, loc] of this.activeLocationsMap.entries()) {
       const lastActive = this.activeVisitorsMap.get(ipHash) || loc.timestamp;
       if (now - lastActive <= this.ACTIVE_WINDOW_MS) {
-        activeLocations.push({ ...loc, timestamp: lastActive });
+        locationsMap.set(ipHash, { ...loc, timestamp: lastActive });
       } else {
         this.activeLocationsMap.delete(ipHash);
       }
     }
 
-    // Ensure we always have at least 1-3 active visitor nodes for vibrant map visualization
+    // 2. Query persistent visitor sessions from SQLite database within the rolling 1-hour window
+    try {
+      const recentRows = db.prepare(`
+        SELECT ip_hash, lat, lng, city, country, country_code,
+               CAST(strftime('%s', created_at) AS INTEGER) * 1000 AS ts
+        FROM site_visits
+        WHERE created_at >= datetime('now', '-1 hour')
+          AND lat IS NOT NULL 
+          AND lng IS NOT NULL
+        ORDER BY created_at DESC
+        LIMIT 100
+      `).all() as { ip_hash: string; lat: number; lng: number; city: string | null; country: string | null; country_code: string | null; ts: number }[];
+
+      for (const row of recentRows) {
+        if (row.ip_hash && !locationsMap.has(row.ip_hash)) {
+          locationsMap.set(row.ip_hash, {
+            id: row.ip_hash,
+            lat: row.lat,
+            lng: row.lng,
+            city: row.city || undefined,
+            country: row.country || 'Global',
+            countryCode: row.country_code || 'UN',
+            timestamp: row.ts || now
+          });
+        }
+      }
+    } catch (err) {
+      console.warn('Could not query 1-hour visitor locations from database:', err);
+    }
+
+    const activeLocations = Array.from(locationsMap.values());
+
+    // 3. Ensure we always have baseline active visitor nodes if database has no recent entries
     if (activeLocations.length === 0) {
       const defaultHubs = [
         TIMEZONE_GEO_MAP['America/San_Francisco'],
@@ -285,7 +324,18 @@ export class VisitorService {
       // Throttle visit logging to once every 15 minutes per unique visitor
       if (now - lastVisit > 15 * 60 * 1000) {
         this.recentVisitsCache.set(ipHash, now);
-        db.prepare('INSERT INTO site_visits (ip_hash, user_agent) VALUES (?, ?)').run(ipHash, userAgent.substring(0, 255));
+        db.prepare(`
+          INSERT INTO site_visits (ip_hash, user_agent, lat, lng, city, country, country_code) 
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `).run(
+          ipHash,
+          userAgent.substring(0, 255),
+          loc.lat,
+          loc.lng,
+          loc.city || null,
+          loc.country,
+          loc.countryCode
+        );
       }
     } catch (err) {
       console.warn('Could not record visit in database:', err);
