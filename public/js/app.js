@@ -880,11 +880,11 @@ function updateTickerFromNotification(notif) {
 }
 
 function flashTickerBadge() {
-  const badge = document.getElementById('ticker-live-badge');
-  if (badge) {
-    badge.classList.remove('ticker-flash');
-    void badge.offsetWidth; // Force reflow
-    badge.classList.add('ticker-flash');
+  const roller = document.getElementById('ticker-roller-box');
+  if (roller) {
+    roller.classList.remove('ticker-flash');
+    void roller.offsetWidth; // Force reflow
+    roller.classList.add('ticker-flash');
   }
 }
 
