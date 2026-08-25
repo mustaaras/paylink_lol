@@ -381,7 +381,7 @@ function initQuickSubmit() {
       presetBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const val = btn.dataset.val;
-      if (val && bidInput) {
+      if (val !== undefined && bidInput) {
         bidInput.value = val;
         updatePayButtonText();
       }
@@ -390,7 +390,14 @@ function initQuickSubmit() {
 
   if (bidInput) {
     bidInput.addEventListener('input', () => {
-      presetBtns.forEach(b => b.classList.remove('active'));
+      const currentVal = parseFloat(bidInput.value) || 0;
+      presetBtns.forEach(b => {
+        if (parseFloat(b.dataset.val) === currentVal) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
       updatePayButtonText();
     });
   }
@@ -399,12 +406,21 @@ function initQuickSubmit() {
     if (submitBtn && bidInput) {
       const bid = parseFloat(bidInput.value) || 0;
       if (bid <= 0) {
-        submitBtn.innerHTML = `Post Free Link ↗`;
+        submitBtn.innerHTML = `
+          <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5L2.5 9H8L7.5 14.5L13.5 7H8L8.5 1.5Z"/></svg>
+          Post Free Link ($0)
+        `;
       } else {
-        submitBtn.innerHTML = `⚡ Pay ${formatCurrency(bid)} & Rank ↗`;
+        submitBtn.innerHTML = `
+          <svg class="btn-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 1.5L2.5 9H8L7.5 14.5L13.5 7H8L8.5 1.5Z"/></svg>
+          Pay & Rank Now (${formatCurrency(bid)})
+        `;
       }
     }
   }
+
+  // Set initial button text based on default input value ($1)
+  updatePayButtonText();
 
   // Form submission directly triggers checkout or instant free publish
   if (form) {
@@ -458,10 +474,11 @@ function initQuickSubmit() {
           updateInputIcon('');
           titleInput.value = '';
           taglineInput.value = '';
-          bidInput.value = '0';
+          bidInput.value = '1';
           presetBtns.forEach(b => b.classList.remove('active'));
-          const zeroBtn = Array.from(presetBtns).find(b => b.dataset.val === '0');
-          if (zeroBtn) zeroBtn.classList.add('active');
+          const oneBtn = Array.from(presetBtns).find(b => b.dataset.val === '1');
+          if (oneBtn) oneBtn.classList.add('active');
+          updatePayButtonText();
           if (previewPanel) previewPanel.style.display = 'none';
           const submitBox = document.getElementById('quick-submit-section');
           if (submitBox) submitBox.classList.remove('expanded');
@@ -662,6 +679,11 @@ function renderLeaderboard() {
             <a href="/go/${item.id}" target="_blank" rel="noopener" class="meta-item meta-domain">
               ${escapeHtml(domainName)}
             </a>
+            ${item.price_tag ? `
+              <span class="meta-item meta-price-tag" title="Product Price">
+                🏷️ ${escapeHtml(item.price_tag)}
+              </span>
+            ` : ''}
             <span class="meta-item meta-category">${catBadgeHtml}</span>
             <span class="meta-item meta-clicks" id="clicks-${item.id}">
               <span class="clicks-dot">●</span> <strong>${Number(item.clicks_count || 0).toLocaleString()}</strong> clicks
@@ -1173,7 +1195,7 @@ window.openDetailsModal = function(id) {
   if (domainEl) domainEl.innerText = domainName || 'paylink.lol';
   if (rankBadge) rankBadge.innerText = `#${item.rank}`;
   if (fullTitle) fullTitle.innerText = item.title;
-  if (catBadge) catBadge.innerHTML = getCategoryBadge(item.category);
+  if (catBadge) catBadge.innerHTML = getCategoryBadge(item.category) + (item.price_tag ? ` <span class="meta-item meta-price-tag" style="margin-left: 6px;">🏷️ ${escapeHtml(item.price_tag)}</span>` : '');
   if (descEl) descEl.innerText = item.tagline || 'No additional description provided.';
 
   if (thumbContainer) {

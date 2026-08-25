@@ -1486,6 +1486,26 @@ header {
   line-height: 1;
 }
 
+.meta-price-tag {
+  background: var(--accent-gold-bg, #fffbeb);
+  color: var(--accent-gold, #d97706);
+  border: 1px solid var(--accent-gold-border, #fde68a);
+  font-weight: 700;
+  padding: 1px 7px;
+  border-radius: 5px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  letter-spacing: -0.2px;
+}
+
+[data-theme="dark"] .meta-price-tag {
+  background: rgba(245, 158, 11, 0.12);
+  color: #fbbf24;
+  border-color: rgba(245, 158, 11, 0.28);
+}
+
 .meta-details-link {
   background: none;
   border: none;
