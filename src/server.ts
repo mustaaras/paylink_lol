@@ -535,8 +535,11 @@ app.get('/api/live-feed', (req: Request, res: Response) => {
   res.setHeader('Connection', 'keep-alive');
   res.flushHeaders();
 
+  const ip = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown';
+  const ipHash = crypto.createHash('sha256').update(ip + 'paylink_salt').digest('hex').substring(0, 16);
+
   sseClients.add(res);
-  VisitorService.registerClient(res);
+  VisitorService.registerClient(res, ipHash);
 
   // Send initial data to connecting client
   const initialPayload = {
