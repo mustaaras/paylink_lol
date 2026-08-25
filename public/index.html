@@ -166,79 +166,86 @@
   <div class="container">
     <!-- Hero Section -->
     <section class="hero">
-      <div class="hero-pill" id="hero-visitor-pill">
-        <span class="ticker-pulse" style="width: 6px; height: 6px; background-color: var(--accent-success);"></span>
-        <strong id="hero-active-visitors" style="color: var(--accent-primary);">1</strong> <span>online now</span>
-        <span style="opacity: 0.4;">•</span>
-        <strong id="hero-total-visitors">1</strong> <span>total visitors</span>
+      <!-- 2D World Map Hero Background -->
+      <div class="hero-map-container" id="hero-map-container">
+        <canvas id="hero-world-map"></canvas>
+        <div id="hero-map-tooltip" class="hero-map-tooltip"></div>
       </div>
 
-      <h1 class="hero-title">
-        <span class="hero-dynamic-text" id="hero-prefix">You pay,</span><br>
-        <span class="gradient-text hero-dynamic-text" id="hero-suffix">you rank.</span>
-      </h1>
+      <div class="hero-content">
+        <div class="hero-pill" id="hero-visitor-pill">
+          <span class="ticker-pulse" style="width: 6px; height: 6px; background-color: var(--accent-success);"></span>
+          <strong id="hero-active-visitors" style="color: var(--accent-primary);">1</strong> <span>online now</span>
+          <span style="opacity: 0.4;">•</span>
+          <strong id="hero-total-visitors">1</strong> <span>total visitors</span>
+        </div>
 
-      <p class="hero-subtitle">
-        Share your link for free. Pay to rank higher & get discovered.
-      </p>
+        <h1 class="hero-title">
+          <span class="hero-dynamic-text" id="hero-prefix">You pay,</span><br>
+          <span class="gradient-text hero-dynamic-text" id="hero-suffix">you rank.</span>
+        </h1>
 
-      <!-- 1-Link Quick Submit Bar (Zero-friction inline submission) -->
-      <div class="quick-submit-box" id="quick-submit-section">
-        <form id="quick-submit-form">
-          <div class="quick-input-row">
-            <div class="quick-url-wrapper">
-              <svg class="quick-url-icon" id="quick-default-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
-                <g transform="rotate(-45 12 12)">
-                  <path d="M14 8.5H16.5C18.433 8.5 20 10.067 20 12C20 13.933 18.433 15.5 16.5 15.5H14"/>
-                  <path d="M10 15.5H7.5C5.567 15.5 4 13.933 4 12C4 10.067 5.567 8.5 7.5 8.5H10"/>
-                  <line x1="8" y1="12" x2="16" y2="12"/>
-                </g>
-              </svg>
-              <img id="quick-url-favicon" class="quick-url-favicon" src="" alt="Favicon" style="display: none;">
-              <input 
-                type="text" 
-                inputmode="url"
-                id="quick-url-input" 
-                class="quick-url-input" 
-                placeholder="Paste link (free to list, e.g. yourproduct.com)..." 
-                required
-                autocomplete="off"
-              >
-            </div>
-            <button type="button" id="quick-fetch-btn" class="btn btn-primary quick-fetch-btn">
-              <span id="fetch-btn-spinner" class="spinner" style="display: none;"></span>
-              <span id="fetch-btn-text">Share Link ↗</span>
-            </button>
-          </div>
+        <p class="hero-subtitle">
+          Share your link for free. Pay to rank higher & get discovered.
+        </p>
 
-          <!-- Auto-Expanded Metadata Preview Card -->
-          <div class="quick-preview-panel" id="quick-preview-panel" style="display: none;">
-            <div class="preview-header">
-              <div class="preview-thumb-box">
-                <img id="preview-img" src="" alt="Favicon" class="preview-thumb" onerror="this.src='https://www.google.com/s2/favicons?domain=example.com&sz=128'">
+        <!-- 1-Link Quick Submit Bar (Zero-friction inline submission) -->
+        <div class="quick-submit-box" id="quick-submit-section">
+          <form id="quick-submit-form">
+            <div class="quick-input-row">
+              <div class="quick-url-wrapper">
+                <svg class="quick-url-icon" id="quick-default-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+                  <g transform="rotate(-45 12 12)">
+                    <path d="M14 8.5H16.5C18.433 8.5 20 10.067 20 12C20 13.933 18.433 15.5 16.5 15.5H14"/>
+                    <path d="M10 15.5H7.5C5.567 15.5 4 13.933 4 12C4 10.067 5.567 8.5 7.5 8.5H10"/>
+                    <line x1="8" y1="12" x2="16" y2="12"/>
+                  </g>
+                </svg>
+                <img id="quick-url-favicon" class="quick-url-favicon" src="" alt="Favicon" style="display: none;">
+                <input 
+                  type="text" 
+                  inputmode="url"
+                  id="quick-url-input" 
+                  class="quick-url-input" 
+                  placeholder="Paste link (free to list, e.g. yourproduct.com)..." 
+                  required
+                  autocomplete="off"
+                >
               </div>
-              <div class="preview-text-fields">
-                <div class="form-group-inline">
-                  <label class="inline-label">Title</label>
-                  <input type="text" id="quick-title-input" class="form-input-inline" placeholder="Project Name" required maxlength="60">
-                </div>
-                <div class="form-group-inline">
-                  <label class="inline-label">Tagline / Description</label>
-                  <input type="text" id="quick-tagline-input" class="form-input-inline" placeholder="Catchy description" required maxlength="130">
-                </div>
-              </div>
+              <button type="button" id="quick-fetch-btn" class="btn btn-primary quick-fetch-btn">
+                <span id="fetch-btn-spinner" class="spinner" style="display: none;"></span>
+                <span id="fetch-btn-text">Share Link ↗</span>
+              </button>
             </div>
 
-            <div class="preview-controls-row">
-              <div class="preview-control-item">
-                <label class="inline-label">Category</label>
-                <select id="quick-category-select" class="form-select-inline" required>
-                  <option value="ai-agents">AI Agents & Infrastructure</option>
-                  <option value="seo-ai">SEO & AI Visibility</option>
-                  <option value="marketing">Marketing & Advertising</option>
-                  <option value="crypto-web3">Crypto, Web3 & Investing</option>
-                  <option value="devtools">Developer Tools</option>
-                  <option value="business-finance">Business, Finance & Legal</option>
+            <!-- Auto-Expanded Metadata Preview Card -->
+            <div class="quick-preview-panel" id="quick-preview-panel" style="display: none;">
+              <div class="preview-header">
+                <div class="preview-thumb-box">
+                  <img id="preview-img" src="" alt="Favicon" class="preview-thumb" onerror="this.src='https://www.google.com/s2/favicons?domain=example.com&sz=128'">
+                </div>
+                <div class="preview-text-fields">
+                  <div class="form-group-inline">
+                    <label class="inline-label">Title</label>
+                    <input type="text" id="quick-title-input" class="form-input-inline" placeholder="Project Name" required maxlength="60">
+                  </div>
+                  <div class="form-group-inline">
+                    <label class="inline-label">Tagline / Description</label>
+                    <input type="text" id="quick-tagline-input" class="form-input-inline" placeholder="Catchy description" required maxlength="130">
+                  </div>
+                </div>
+              </div>
+
+              <div class="preview-controls-row">
+                <div class="preview-control-item">
+                  <label class="inline-label">Category</label>
+                  <select id="quick-category-select" class="form-select-inline" required>
+                    <option value="ai-agents">AI Agents & Infrastructure</option>
+                    <option value="seo-ai">SEO & AI Visibility</option>
+                    <option value="marketing">Marketing & Advertising</option>
+                    <option value="crypto-web3">Crypto, Web3 & Investing</option>
+                    <option value="devtools">Developer Tools</option>
+                    <option value="business-finance">Business, Finance & Legal</option>
                   <option value="security-privacy">Security, Privacy & Compliance</option>
                   <option value="health-wellness">Health, Fitness & Wellness</option>
                   <option value="social-creator">Social Media & Creator Tools</option>
@@ -313,6 +320,7 @@
           <div class="stat-label">Highest Bid</div>
           <div class="stat-value highlight" id="stat-top-bid" style="color: var(--accent-success);">$0</div>
         </div>
+      </div>
       </div>
     </section>
 
@@ -714,6 +722,7 @@
   </footer>
 
   <!-- Scripts -->
+  <script src="/js/worldmap.js?v=4.0"></script>
   <script src="/js/app.js?v=4.0"></script>
 </body>
 </html>

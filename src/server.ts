@@ -337,9 +337,39 @@ app.get('/api/listings/:id', (req: Request, res: Response) => {
 });
 
 // Leaderboard aggregate stats
+// Leaderboard aggregate stats
 app.get('/api/stats', (req: Request, res: Response) => {
   const stats = ListingService.getStats();
   res.json(stats);
+});
+
+// Live online visitor locations for 2D World Map
+app.get('/api/visitor-locations', (req: Request, res: Response) => {
+  res.json({
+    active_visitors: VisitorService.getActiveCount(),
+    locations: VisitorService.getActiveLocations()
+  });
+});
+
+// Client geolocation / timezone ping endpoint for high accuracy on local / proxied visits
+app.post('/api/visitor-ping', (req: Request, res: Response) => {
+  try {
+    const { timezone, countryCode, city } = req.body || {};
+    const ip = (req.headers['x-forwarded-for'] as string) || req.socket.remoteAddress || 'unknown';
+    const ipHash = crypto.createHash('sha256').update(ip + 'paylink_salt').digest('hex').substring(0, 16);
+
+    VisitorService.updateClientLocation(ipHash, timezone, countryCode, city);
+
+    // Broadcast updated visitor count & locations to all clients
+    broadcastSSE('visitors_update', {
+      active_visitors: VisitorService.getActiveCount(),
+      locations: VisitorService.getActiveLocations()
+    });
+
+    res.json({ success: true, active_visitors: VisitorService.getActiveCount() });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message || 'Failed to record ping' });
+  }
 });
 
 // Full Activity Stream
@@ -545,20 +575,23 @@ app.get('/api/live-feed', (req: Request, res: Response) => {
   const initialPayload = {
     listings: ListingService.getListings(),
     stats: ListingService.getStats(),
-    recentOutbids: ListingService.getRecentOutbids(8)
+    recentOutbids: ListingService.getRecentOutbids(8),
+    visitor_locations: VisitorService.getActiveLocations()
   };
   res.write(`event: connected\ndata: ${JSON.stringify(initialPayload)}\n\n`);
 
-  // Broadcast updated visitor count to all clients
+  // Broadcast updated visitor count and locations to all clients
   broadcastSSE('visitors_update', {
-    active_visitors: VisitorService.getActiveCount()
+    active_visitors: VisitorService.getActiveCount(),
+    locations: VisitorService.getActiveLocations()
   });
 
   req.on('close', () => {
     sseClients.delete(res);
     VisitorService.unregisterClient(res);
     broadcastSSE('visitors_update', {
-      active_visitors: VisitorService.getActiveCount()
+      active_visitors: VisitorService.getActiveCount(),
+      locations: VisitorService.getActiveLocations()
     });
   });
 });

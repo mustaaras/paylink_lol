@@ -520,6 +520,9 @@ function connectLiveFeed() {
       if (data.recentOutbids && data.recentOutbids.length > 0) {
         updateTicker(data.recentOutbids[0]);
       }
+      if (data.visitor_locations && window.paylinkWorldMap) {
+        window.paylinkWorldMap.setLocations(data.visitor_locations);
+      }
     } catch (err) {
       console.error('Error parsing SSE connected payload:', err);
     }
@@ -569,7 +572,12 @@ function connectLiveFeed() {
   eventSource.addEventListener('visitors_update', (e) => {
     try {
       const data = JSON.parse(e.data);
-      updateActiveVisitors(data.active_visitors);
+      if (data.active_visitors !== undefined) {
+        updateActiveVisitors(data.active_visitors);
+      }
+      if (data.locations && window.paylinkWorldMap) {
+        window.paylinkWorldMap.setLocations(data.locations);
+      }
     } catch (err) {
       console.error('Error processing visitors update:', err);
     }
@@ -592,6 +600,16 @@ async function loadLeaderboard() {
     const statsRes = await fetch('/api/stats');
     const stats = await statsRes.json();
     updateStats(stats);
+
+    // Initial visitor locations fetch
+    fetch('/api/visitor-locations')
+      .then(r => r.json())
+      .then(geoData => {
+        if (geoData && geoData.locations && window.paylinkWorldMap) {
+          window.paylinkWorldMap.setLocations(geoData.locations);
+        }
+      })
+      .catch(() => {});
   } catch (err) {
     console.error('Failed to load listings:', err);
   }
