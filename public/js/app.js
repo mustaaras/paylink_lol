@@ -766,8 +766,8 @@ function buildRollingActivities() {
     list.push({
       type: 'boost',
       listing_id: ev.listing_id || '',
-      badge: 'BOOST',
-      badgeClass: 'style="background: var(--accent-gold); color: #000;"',
+      badge: '⚡ BOOST',
+      badgeClass: 'badge-boost',
       title: ev.title || 'Project',
       text: `boosted by <span class="roll-price">+${formatCurrency(ev.amount || 1)}</span> for Rank #${ev.rank || 1}`
     });
@@ -779,7 +779,7 @@ function buildRollingActivities() {
       type: 'rank',
       listing_id: item.id,
       badge: `#${item.rank}`,
-      badgeClass: '',
+      badgeClass: 'badge-rank',
       title: item.title,
       text: `holds Rank #${item.rank} with <span class="roll-price">${formatCurrency(item.bid_amount)}</span>`
     });
@@ -788,15 +788,15 @@ function buildRollingActivities() {
   // 3. Add dynamic platform tips
   list.push({
     type: 'tip',
-    badge: '⚡ TIP',
-    badgeClass: '',
+    badge: '💡 TIP',
+    badgeClass: 'badge-tip',
     title: 'Share your link for free',
     text: `Instant discovery for SaaS, tools & profiles`
   });
   list.push({
     type: 'battle',
     badge: '🔥 BATTLE',
-    badgeClass: '',
+    badgeClass: 'badge-battle',
     title: 'Live Attention Battles',
     text: `Outbid by +$1 to claim #1 on the leaderboard`
   });
@@ -816,9 +816,10 @@ function displayCurrentRollItem(immediate = false) {
   if (!el || rollingActivities.length === 0) return;
 
   const item = rollingActivities[activeRollIndex % rollingActivities.length];
+  const badgeClassAttr = item.badgeClass ? `roll-badge ${item.badgeClass}` : 'roll-badge';
 
   const html = `
-    <span class="roll-badge" ${item.badgeClass || ''}>${item.badge}</span>
+    <span class="${badgeClassAttr}">${item.badge}</span>
     <span class="roll-title">${escapeHtml(item.title)}</span>
     <span>${item.text}</span>
   `;

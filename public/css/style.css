@@ -134,12 +134,13 @@ body::before {
 .ticker-bar {
   background: var(--bg-secondary);
   border-bottom: 1px solid var(--border-subtle);
-  padding: 8px 0;
+  padding: 8px 32px;
   font-size: 13px;
   position: sticky;
   top: 0;
   z-index: 50;
   box-shadow: var(--shadow-sm);
+  width: 100%;
 }
 
 .ticker-content {
@@ -147,6 +148,7 @@ body::before {
   align-items: center;
   justify-content: space-between;
   gap: 14px;
+  width: 100%;
 }
 
 .ticker-left-group {
@@ -230,11 +232,36 @@ body::before {
 .ticker-roll-item .roll-badge {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 750;
+  color: var(--text-secondary);
+  padding: 1.5px 7px;
+  border-radius: 5px;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ticker-roll-item .roll-badge.badge-boost {
+  background: rgba(16, 185, 129, 0.12);
   color: var(--accent-primary);
-  padding: 1px 7px;
-  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  font-weight: 800;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.12);
+}
+
+.ticker-roll-item .roll-badge.badge-battle {
+  background: rgba(99, 102, 241, 0.12);
+  color: #6366f1;
+  border: 1px solid rgba(99, 102, 241, 0.28);
+  font-weight: 800;
+}
+
+.ticker-roll-item .roll-badge.badge-tip {
+  background: var(--bg-card);
+  color: var(--accent-primary);
+  border: 1px solid var(--border-subtle);
 }
 
 .ticker-roll-item .roll-title {
@@ -302,18 +329,27 @@ body::before {
 }
 
 .ticker-stat-item strong {
-  color: var(--accent-gold);
+  color: var(--accent-primary);
 }
 
 /* Header & Nav */
 header {
-  padding: 20px 0 12px;
+  width: 100%;
+  padding: 20px 32px 14px;
+  position: relative;
+  z-index: 10;
+}
+
+header .container {
+  max-width: 100%;
+  padding: 0;
 }
 
 .nav-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  width: 100%;
 }
 
 .logo-link {
@@ -2101,6 +2137,18 @@ footer {
 
 /* Comprehensive Mobile & Tablet Responsive Design */
 @media (max-width: 768px) {
+  .ticker-bar {
+    padding: 8px 16px;
+  }
+
+  .ticker-badge {
+    display: none !important;
+  }
+
+  header {
+    padding: 16px 16px 10px;
+  }
+
   .container {
     padding: 0 16px;
   }
