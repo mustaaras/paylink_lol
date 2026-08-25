@@ -334,22 +334,13 @@ body::before {
 
 /* Header & Nav */
 header {
-  width: 100%;
-  padding: 20px 32px 14px;
-  position: relative;
-  z-index: 10;
-}
-
-header .container {
-  max-width: 100%;
-  padding: 0;
+  padding: 20px 0 12px;
 }
 
 .nav-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
 }
 
 .logo-link {
@@ -2143,10 +2134,6 @@ footer {
 
   .ticker-badge {
     display: none !important;
-  }
-
-  header {
-    padding: 16px 16px 10px;
   }
 
   .container {
