@@ -6,7 +6,7 @@ export class VisitorService {
   private static activeClients = new Set<Response>();
   private static recentVisitsCache = new Map<string, number>();
   private static activeVisitorsMap = new Map<string, number>();
-  private static readonly ACTIVE_WINDOW_MS = 15 * 60 * 1000; // Rolling 15-minute window
+  private static readonly ACTIVE_WINDOW_MS = 60 * 60 * 1000; // Rolling 1-hour window
 
   static registerClient(client: Response, ipHash?: string) {
     this.activeClients.add(client);
@@ -20,7 +20,7 @@ export class VisitorService {
   }
 
   /**
-   * Get active online visitors count based on rolling 15-minute window and active connections
+   * Get active online visitors count based on rolling 1-hour window and active connections
    */
   static getActiveCount(): number {
     const now = Date.now();
