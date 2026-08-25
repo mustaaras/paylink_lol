@@ -80,6 +80,22 @@ export function initDatabase() {
 }
 
 function seedIfEmpty() {
+  // Auto-backfill official domain logos for any listings missing image_url
+  try {
+    const allListings = db.prepare('SELECT id, buy_url, image_url FROM listings').all() as { id: string; buy_url: string; image_url: string | null }[];
+    for (const l of allListings) {
+      if (!l.image_url || l.image_url.trim() === '') {
+        try {
+          const u = new URL(l.buy_url.startsWith('http') ? l.buy_url : 'https://' + l.buy_url);
+          const faviconUrl = `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=128`;
+          db.prepare('UPDATE listings SET image_url = ? WHERE id = ?').run(faviconUrl, l.id);
+        } catch {}
+      }
+    }
+  } catch (err) {
+    console.warn('Could not backfill logos:', err);
+  }
+
   // Automatically clean up old mock seed and test items
   db.exec(`
     DELETE FROM bids WHERE listing_id IN (

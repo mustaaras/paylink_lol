@@ -619,10 +619,12 @@ function renderLeaderboard() {
     const domainName = getDomainFromUrl(item.buy_url);
     const minToClaim = Math.max(1, Math.floor(Number(item.bid_amount || 0)) + 1);
 
-    // Squircle Thumbnail / Monogram Icon
+    // Squircle Thumbnail / Monogram Icon with smart domain logo fallback
+    const domainFavicon = domainName ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(domainName)}&sz=128` : '';
+    const logoUrl = item.image_url || domainFavicon;
     let thumbHtml = '';
-    if (item.image_url) {
-      thumbHtml = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.parentElement.innerHTML='<div class=\\'item-monogram\\' style=\\'background: ${getGradientForString(item.title)}\\'>${getMonogram(item.title)}</div>'" />`;
+    if (logoUrl) {
+      thumbHtml = `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(item.title)}" class="item-thumb" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'item-monogram\\' style=\\'background: ${getGradientForString(item.title)}\\'>${getMonogram(item.title)}</div>'" />`;
     } else {
       const gradient = getGradientForString(item.title);
       thumbHtml = `<div class="item-monogram" style="background: ${gradient}">${getMonogram(item.title)}</div>`;
@@ -1175,8 +1177,12 @@ window.openDetailsModal = function(id) {
   if (descEl) descEl.innerText = item.tagline || 'No additional description provided.';
 
   if (thumbContainer) {
-    if (item.image_url) {
-      thumbContainer.innerHTML = `<img src="${escapeHtml(item.image_url)}" alt="${escapeHtml(item.title)}" class="details-thumb-img" onerror="this.parentElement.innerHTML='<div class=\\'item-monogram\\' style=\\'background: ${getGradientForString(item.title)}\\'>${getMonogram(item.title)}</div>'" />`;
+    const itemDomain = getDomainFromUrl(item.buy_url);
+    const domainFavicon = itemDomain ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(itemDomain)}&sz=128` : '';
+    const logoUrl = item.image_url || domainFavicon;
+
+    if (logoUrl) {
+      thumbContainer.innerHTML = `<img src="${escapeHtml(logoUrl)}" alt="${escapeHtml(item.title)}" class="details-thumb-img" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\\'item-monogram\\' style=\\'background: ${getGradientForString(item.title)}\\'>${getMonogram(item.title)}</div>'" />`;
     } else {
       thumbContainer.innerHTML = `<div class="item-monogram" style="background: ${getGradientForString(item.title)}">${getMonogram(item.title)}</div>`;
     }

@@ -385,11 +385,21 @@ app.post('/api/listings/create-checkout', async (req: Request, res: Response) =>
       return;
     }
 
+    // Helper to resolve high-res official brand icon from domain
+    const getDomainFavicon = (urlStr: string) => {
+      try {
+        const u = new URL(urlStr.startsWith('http') ? urlStr : 'https://' + urlStr);
+        return `https://www.google.com/s2/favicons?domain=${u.hostname}&sz=128`;
+      } catch {
+        return undefined;
+      }
+    };
+
     const input: CreateListingInput = {
       title: title.trim(),
       tagline: tagline.trim(),
       buy_url: securityCheck.finalUrl,
-      image_url: image_url ? image_url.trim() : undefined,
+      image_url: (image_url && image_url.trim()) ? image_url.trim() : getDomainFavicon(securityCheck.finalUrl),
       price_tag: price_tag ? price_tag.trim() : undefined,
       category,
       bid_amount: isNaN(parseFloat(bid_amount)) ? 0 : Math.max(0, parseFloat(bid_amount)),
