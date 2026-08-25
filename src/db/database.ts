@@ -176,6 +176,25 @@ function seedIfEmpty() {
           category = 'leaderboards'
       WHERE id = ?
     `).run(paylinkRow.id);
+
+    const existingPaylinkBid = db.prepare('SELECT id FROM bids WHERE listing_id = ?').get(paylinkRow.id);
+    if (!existingPaylinkBid) {
+      db.prepare(`
+        INSERT INTO bids (id, listing_id, amount, bidder_email)
+        VALUES (?, ?, ?, ?)
+      `).run(
+        'bid_paylink_seed',
+        paylinkRow.id,
+        1.00,
+        'hello@paylink.lol'
+      );
+    } else {
+      db.prepare(`
+        UPDATE bids 
+        SET amount = 1.00 
+        WHERE listing_id = ?
+      `).run(paylinkRow.id);
+    }
   }
 
   recalculateRanks();
