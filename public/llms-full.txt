@@ -1,0 +1,185 @@
+# paylink.lol — Full Technical Documentation & LLM Knowledge Base
+
+> paylink.lol is a real-time attention leaderboard, dynamic link directory, and live bidding discovery engine. This file contains complete, exhaustive details on the platform mechanics, data models, public APIs, rules, and technical architecture.
+
+---
+
+## 1. System Overview & Philosophy
+
+paylink.lol reimagines link discovery and advertising into a gamified, real-time, zero-subscription attention leaderboard.
+
+### Core Mechanics
+- **"You pay, you rank."**: The leaderboard is ranked purely by the cumulative dollar amount attached to each listing. The project with the highest bid holds the `#1` spotlight slot.
+- **Free Listing Tier ($0)**: Users can list any valid website for free. Free listings enter at the lowest active rank (or tie-break by submission timestamp). Free submissions are protected by Cloudflare Turnstile bot verification to eliminate spam.
+- **Instant Outbidding / Boosting**: Any user can boost an existing listing or submit a new listing with a bid. As soon as the bid is settled via Stripe (or instant free submission), the entire leaderboard re-ranks in sub-second time.
+- **Persistent Ranks**: Unlike daily or monthly recurring ad networks, a listing retains its position indefinitely until outbid by another project.
+- **Click Tracking & Outbound Redirection**: External links are routed through `/go/:id` which logs analytics (referrer, anonymized timestamp) and broadcasts live click counters via SSE before performing a 302 redirect.
+
+---
+
+## 2. Platform Endpoints & Pages
+
+### Web Pages
+- `https://paylink.lol/`: Main interactive web application with real-time leaderboard, search, category filter, live battle ticker, submission modal, and outbid modal.
+- `https://paylink.lol/rules`: Rules of engagement, ranking calculation formulas, moderation policies, and submission requirements.
+- `https://paylink.lol/terms`: Platform terms of service, payment processing terms, disclaimers, and user conduct.
+- `https://paylink.lol/privacy`: Privacy policy detailing zero-tracking analytics and privacy-first cookie-free design.
+- `https://paylink.lol/llms.txt`: Summary AI-friendly guide.
+- `https://paylink.lol/llms-full.txt`: Full comprehensive guide for AI models and automated agents.
+
+---
+
+## 3. Public API Specifications for Autonomous Agents
+
+Autonomous agents (ChatGPT actions, Claude tools, Gemini agents, LangChain / LlamaIndex tools) can read and interact with paylink.lol using standard HTTP requests.
+
+### Endpoint: GET /api/listings
+Returns all active listings ordered by rank ascending (`rank: 1` is highest).
+
+#### Query Parameters:
+- `category` (optional, string): Filter by category (e.g. `AI & Automation`, `SaaS & Software`, etc.)
+- `search` (optional, string): Case-insensitive keyword search matching title, description, or domain.
+
+#### Example Response:
+```json
+[
+  {
+    "id": "lst_v9a8d7s6",
+    "rank": 1,
+    "title": "CryptoPulse AI",
+    "url": "https://cryptopulse.example.com",
+    "description": "Next-gen algorithmic trading assistant and crypto analytics.",
+    "category": "AI & Automation",
+    "bid_amount": 150.00,
+    "clicks": 1420,
+    "created_at": "2026-08-20T14:32:10.000Z",
+    "updated_at": "2026-08-24T18:45:00.000Z"
+  },
+  {
+    "id": "lst_f3k2j1h0",
+    "rank": 2,
+    "title": "DevToolkit",
+    "url": "https://devtoolkit.example.com",
+    "description": "Essential developer utilities and regex debugger.",
+    "category": "Developer Tools",
+    "bid_amount": 75.50,
+    "clicks": 890,
+    "created_at": "2026-08-21T09:12:00.000Z",
+    "updated_at": "2026-08-23T11:20:00.000Z"
+  }
+]
+```
+
+---
+
+### Endpoint: GET /api/listings/:id
+Retrieves a single listing by its unique identifier.
+
+#### Example Response:
+```json
+{
+  "id": "lst_v9a8d7s6",
+  "rank": 1,
+  "title": "CryptoPulse AI",
+  "url": "https://cryptopulse.example.com",
+  "description": "Next-gen algorithmic trading assistant and crypto analytics.",
+  "category": "AI & Automation",
+  "bid_amount": 150.00,
+  "clicks": 1420,
+  "created_at": "2026-08-20T14:32:10.000Z"
+}
+```
+
+---
+
+### Endpoint: GET /api/stats
+Returns real-time aggregate statistics for the entire directory.
+
+#### Example Response:
+```json
+{
+  "total_listings": 42,
+  "highest_bid": 150.00,
+  "total_bids": 1845.50,
+  "active_visitors": 18
+}
+```
+
+---
+
+### Endpoint: GET /api/activity
+Returns the most recent listing events, outbid battles, and leaderboard takeovers.
+
+#### Example Response:
+```json
+[
+  {
+    "id": "act_98213",
+    "type": "outbid",
+    "timestamp": "2026-08-24T18:45:00.000Z",
+    "listing_title": "CryptoPulse AI",
+    "listing_id": "lst_v9a8d7s6",
+    "amount": 25.00,
+    "previous_rank": 2,
+    "new_rank": 1,
+    "message": "⚡ \"CryptoPulse AI\" boosted by +$25.00 to #1!"
+  }
+]
+```
+
+---
+
+### Endpoint: GET /api/metadata?url=...
+Extracts open graph metadata, title, favicon, and description from a target URL for automated auto-fill in submission workflows.
+
+#### Query Parameters:
+- `url` (required, string): URL-encoded web address (e.g. `https%3A%2F%2Fexample.com`)
+
+#### Example Response:
+```json
+{
+  "title": "Example Domain",
+  "description": "This domain is for use in illustrative examples in documents.",
+  "favicon": "https://example.com/favicon.ico",
+  "image": "https://example.com/og.png"
+}
+```
+
+---
+
+## 4. Real-Time Streaming SSE Protocol (Server-Sent Events)
+
+Connecting to `GET /api/live-feed` opens a persistent SSE connection. The server transmits real-time JSON payloads under standard event names:
+
+1. `event: connected`: Broadcasted upon initial handshake. Contains current `listings`, `stats`, and `recentOutbids`.
+2. `event: leaderboard_update`: Broadcasted instantly when any listing is created, edited, or outbid.
+3. `event: visitors_update`: Broadcasted when the number of active visitors on paylink.lol changes.
+4. `event: click_update`: Broadcasted whenever any visitor clicks a listing redirect link (`/go/:id`).
+
+---
+
+## 5. Moderation, Content Policies & Rules
+
+To preserve directory quality and user safety, paylink.lol enforces strict automated and manual moderation rules:
+
+### Allowed Content
+- SaaS products, apps, websites, digital tools, APIs, open-source repositories.
+- Portfolios, newsletters, podcasts, social channels, YouTube channels, creative studios.
+- Legit blockchain/DeFi projects, educational platforms, communities, and indie hacker projects.
+
+### Strictly Prohibited Content
+- Phishing, credential harvesting, malware, trojans, ransomware, or exploits.
+- Hate speech, harassment, illegal products/services, fraud, and pyramid schemes.
+- NSFW/adult content, deceptive redirects, cloaking, and URL shortener chains designed to obscure destinations.
+
+Any listing violating these rules is purged from the database immediately. Payments associated with prohibited listings are non-refundable as penalty for platform abuse.
+
+---
+
+## 6. Technical Stack & Infrastructure
+
+- **Backend**: Node.js, TypeScript, Express, SQLite (`better-sqlite3`) with WAL mode for ultra-fast ACID transactions.
+- **Frontend**: Vanilla HTML5, CSS3, modern JavaScript (no heavy runtime framework overhead, ultra-fast TTFB and LCP).
+- **Payment Processing**: Stripe Checkout with cryptographic webhook verification (`STRIPE_WEBHOOK_SECRET`).
+- **Bot Defense**: Cloudflare Turnstile invisible CAPTCHA protection on zero-dollar submissions.
+- **Real-Time Layer**: SSE (Server-Sent Events) with heartbeat keepalives and memory-efficient client pools.

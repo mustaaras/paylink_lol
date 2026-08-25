@@ -1,0 +1,74 @@
+# robots.txt for paylink.lol
+# https://paylink.lol/
+
+User-agent: *
+Allow: /
+Allow: /rules
+Allow: /terms
+Allow: /privacy
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
+Allow: /api/listings
+Allow: /api/stats
+Allow: /api/activity
+Allow: /api/ticker
+Allow: /go/
+
+# Disallow admin dashboard and internal endpoints
+Disallow: /aras/admin
+Disallow: /aras/admin/
+Disallow: /api/admin/
+Disallow: /api/webhooks/
+Disallow: /dev-complete-checkout
+
+# AI Agents and LLM Crawlers (Explicitly Allowed)
+User-agent: Googlebot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GoogleOther
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Sitemap & LLM Specification
+Sitemap: https://paylink.lol/sitemap.xml
+# LLMs specification: https://paylink.lol/llms.txt
+# Full LLMs knowledge base: https://paylink.lol/llms-full.txt

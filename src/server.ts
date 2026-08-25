@@ -121,12 +121,49 @@ app.post(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Record visitor sessions in database
+// Record visitor sessions in database (exclude static assets, images, bots/crawlers metadata)
 app.use((req: Request, res: Response, next) => {
-  if (!req.path.startsWith('/css/') && !req.path.startsWith('/js/') && !req.path.endsWith('.svg') && !req.path.endsWith('.png') && !req.path.endsWith('.ico')) {
+  const p = req.path.toLowerCase();
+  if (
+    !p.startsWith('/css/') &&
+    !p.startsWith('/js/') &&
+    !p.endsWith('.svg') &&
+    !p.endsWith('.png') &&
+    !p.endsWith('.jpg') &&
+    !p.endsWith('.jpeg') &&
+    !p.endsWith('.webp') &&
+    !p.endsWith('.ico') &&
+    !p.endsWith('.txt') &&
+    !p.endsWith('.xml')
+  ) {
     VisitorService.recordVisit(req);
   }
   next();
+});
+
+// Explicit SEO, Bot & LLM standard endpoints
+app.get('/robots.txt', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.resolve(process.cwd(), 'public/robots.txt'));
+});
+
+app.get('/sitemap.xml', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=3600');
+  res.sendFile(path.resolve(process.cwd(), 'public/sitemap.xml'));
+});
+
+app.get('/llms.txt', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.resolve(process.cwd(), 'public/llms.txt'));
+});
+
+app.get('/llms-full.txt', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.setHeader('Cache-Control', 'public, max-age=86400');
+  res.sendFile(path.resolve(process.cwd(), 'public/llms-full.txt'));
 });
 
 // Serve static frontend assets

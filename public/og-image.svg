@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" fill="none">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&amp;family=Syne:wght@800;900&amp;family=Unbounded:wght@800;900&amp;display=swap');
+      
+      .brand-title {
+        font-family: 'Unbounded', 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 900;
+        font-size: 34px;
+        letter-spacing: -0.8px;
+        fill: #0F172A;
+      }
+      .brand-accent {
+        fill: #059669;
+        font-style: italic;
+      }
+      .hero-heading {
+        font-family: 'Unbounded', 'Syne', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 900;
+        font-size: 58px;
+        line-height: 1.1;
+        letter-spacing: -1.5px;
+        fill: #0F172A;
+      }
+      .hero-sub {
+        font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        font-weight: 500;
+        font-size: 24px;
+        line-height: 1.45;
+        fill: #475569;
+      }
+      .pill-text {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
+        fill: #047857;
+      }
+      .badge-text-primary {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        fill: #047857;
+      }
+      .badge-text-secondary {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        fill: #1E293B;
+      }
+      .footer-brand {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 18px;
+        fill: #059669;
+      }
+      .footer-tag {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 600;
+        font-size: 18px;
+        fill: #94A3B8;
+      }
+    </style>
+
+    <radialGradient id="lightEmeraldGlow" cx="85%" cy="15%" r="45%">
+      <stop offset="0%" stop-color="#10B981" stop-opacity="0.12" />
+      <stop offset="100%" stop-color="#10B981" stop-opacity="0" />
+    </radialGradient>
+    
+    <radialGradient id="lightMintGlow" cx="15%" cy="85%" r="40%">
+      <stop offset="0%" stop-color="#059669" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#059669" stop-opacity="0" />
+    </radialGradient>
+
+    <filter id="softCardShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="12" stdDeviation="24" flood-color="#0F172A" flood-opacity="0.06"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#0F172A" flood-opacity="0.04"/>
+    </filter>
+  </defs>
+
+  <!-- Background Base -->
+  <rect width="1200" height="630" fill="#F8FAFC"/>
+  <rect width="1200" height="630" fill="url(#lightEmeraldGlow)"/>
+  <rect width="1200" height="630" fill="url(#lightMintGlow)"/>
+
+  <!-- Centered Clean Card Container -->
+  <rect x="60" y="50" width="1080" height="530" rx="24" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="2" filter="url(#softCardShadow)"/>
+  
+  <!-- Emerald Top Highlight Bar -->
+  <rect x="124" y="50" width="180" height="4" rx="2" fill="#059669"/>
+
+  <!-- Brand Logo & Header -->
+  <g transform="translate(124, 104)">
+    <rect width="56" height="56" rx="14" fill="#059669"/>
+    <!-- Top Right Link Loop -->
+    <path d="M26 19L31 14C34.3 10.7 39.7 10.7 43 14C46.3 17.3 46.3 22.7 43 26L38 31" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round"/>
+    <!-- Bottom Left Link Loop -->
+    <path d="M30 37L25 42C21.7 45.3 16.3 45.3 13 42C9.7 38.7 9.7 33.3 13 30L18 25" stroke="#A7F3D0" stroke-width="3.6" stroke-linecap="round"/>
+    <!-- Connecting Link Bar -->
+    <line x1="22" y1="34" x2="34" y2="22" stroke="#FFFFFF" stroke-width="3.6" stroke-linecap="round"/>
+
+    <!-- Wordmark -->
+    <text class="brand-title" x="74" y="40">paylink<tspan class="brand-accent">.lol</tspan></text>
+
+    <!-- Live Status Pill (Right Aligned) -->
+    <g transform="translate(790, 8)">
+      <rect width="134" height="38" rx="19" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.5"/>
+      <circle cx="20" cy="19" r="5" fill="#10B981"/>
+      <text class="pill-text" x="34" y="24">LIVE FEED</text>
+    </g>
+  </g>
+
+  <!-- Tagline & Description -->
+  <g transform="translate(124, 230)">
+    <text class="hero-heading" x="0" y="30">You pay, you rank.</text>
+    
+    <text class="hero-sub" x="0" y="86">
+      The real-time attention leaderboard &amp; link discovery directory.<tspan x="0" y="122">Share your link for free. Pay to rank higher &amp; get discovered.</tspan>
+    </text>
+
+    <!-- Clean Badges -->
+    <g transform="translate(0, 172)">
+      <!-- Badge 1 -->
+      <rect x="0" y="0" width="190" height="42" rx="10" fill="#ECFDF5" stroke="#A7F3D0" stroke-width="1.2"/>
+      <text class="badge-text-primary" x="16" y="27">⚡ Real-Time Bids</text>
+
+      <!-- Badge 2 -->
+      <rect x="204" y="0" width="168" height="42" rx="10" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.2"/>
+      <text class="badge-text-secondary" x="220" y="27">✨ Free to Share</text>
+
+      <!-- Badge 3 -->
+      <rect x="386" y="0" width="186" height="42" rx="10" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.2"/>
+      <text class="badge-text-secondary" x="402" y="27">🚀 Instant Discover</text>
+
+      <!-- Badge 4 -->
+      <rect x="586" y="0" width="206" height="42" rx="10" fill="#F1F5F9" stroke="#E2E8F0" stroke-width="1.2"/>
+      <text class="badge-text-secondary" x="602" y="27">🛡️ Anti-Bot Verified</text>
+    </g>
+  </g>
+
+  <!-- Footer Link -->
+  <g transform="translate(124, 532)">
+    <text class="footer-brand" x="0" y="0">https://paylink.lol</text>
+    <text class="footer-tag" x="195" y="0">• Transparent • Zero Subscriptions</text>
+  </g>
+</svg>

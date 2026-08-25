@@ -1,0 +1,97 @@
+# paylink.lol
+
+> paylink.lol is a real-time attention leaderboard and decentralized-style link discovery directory where creators, startups, developers, and projects share their links and compete for top visibility through transparent live bidding. "You pay, you rank."
+
+## Core Philosophy & Summary
+
+paylink.lol operates on a simple, transparent principle:
+1. **Free Link Sharing**: Anyone can submit and list their project or website for free with Cloudflare Turnstile bot verification.
+2. **Transparent Live Bidding**: Want #1 visibility? Anyone can place a bid or boost an existing link with an outbid to climb the leaderboard instantly.
+3. **No Recurring Subscriptions**: All rankings are pay-as-you-go. When you pay, you rank immediately. Your rank remains until another project outbids you.
+4. **Real-time Live Feed**: Every new submission, outbid battle, and visitor click is broadcast live via Server-Sent Events (SSE).
+5. **Verified & Moderated**: Built-in automated URL safety heuristics, spam/phishing filters, domain deduplication, and admin moderation protect the leaderboard integrity.
+
+---
+
+## Key Platform Links
+
+- [Homepage & Live Leaderboard](https://paylink.lol/): View active links ranked by bid amount, explore categories, submit links, and place outbids.
+- [Platform Rules & Guidelines](https://paylink.lol/rules): Clear rules on ranking algorithms, bidding, allowed/prohibited content, and fair play.
+- [Terms of Service](https://paylink.lol/terms): Legal terms, payments, refunds, and user obligations.
+- [Privacy Policy](https://paylink.lol/privacy): Transparent privacy policy, zero-tracking policy, and data handling practices.
+- [Full LLM Documentation](https://paylink.lol/llms-full.txt): Comprehensive documentation including API schemas, data models, and system architecture for LLMs.
+
+---
+
+## Category Taxonomy
+
+Projects on paylink.lol are organized into curated categories:
+- **AI & Automation**: AI tools, agents, LLMs, workflow automation, and machine learning software.
+- **SaaS & Software**: B2B and B2C software products, micro-SaaS, and developer tools.
+- **Design & Creative**: UI/UX tools, portfolios, graphics, fonts, and creative assets.
+- **Developer Tools**: APIs, SDKs, open source repositories, frameworks, and dev platforms.
+- **Crypto & Web3**: Blockchain applications, DeFi protocols, tokens, and Web3 tools.
+- **Media & Content**: Newsletters, blogs, podcasts, YouTube channels, and digital media.
+- **Finance & Money**: Fintech apps, investment platforms, and billing services.
+- **Other**: Diverse innovations, communities, and indie projects.
+
+---
+
+## Public REST & Streaming API for AI Agents & Bots
+
+All endpoints support `GET` and return JSON (or SSE streams for live data). Base URL: `https://paylink.lol`
+
+### 1. Active Ranked Listings
+- **URL**: `GET /api/listings`
+- **Description**: Returns all currently active listings ordered by rank (`#1` has highest `bid_amount`).
+- **Response Format**: JSON Array of Listing objects:
+  - `id` (string): Unique identifier (e.g. `lst_abc123`)
+  - `rank` (number): 1-based leaderboard position
+  - `title` (string): Project name / title
+  - `url` (string): Destination website URL
+  - `description` (string): Short pitch / tagline
+  - `category` (string): Category tag
+  - `bid_amount` (number): Current cumulative bid amount in USD
+  - `clicks` (number): Total verified clicks received
+  - `created_at` (string): ISO 8601 timestamp
+
+### 2. Single Listing Lookup
+- **URL**: `GET /api/listings/:id`
+- **Description**: Retrieve detailed information for a specific listing ID.
+
+### 3. Platform Live Stats
+- **URL**: `GET /api/stats`
+- **Description**: Returns high-level platform metrics:
+  - `total_listings` (number): Count of active listings
+  - `highest_bid` (number): Current #1 bid amount in USD
+  - `total_bids` (number): Total USD volume processed
+  - `active_visitors` (number): Real-time online visitors
+
+### 4. Recent Outbid & Battle Activity
+- **URL**: `GET /api/activity`
+- **Description**: Returns recent outbid events, rank flips, and listing creation events.
+
+### 5. Real-Time SSE Stream
+- **URL**: `GET /api/live-feed`
+- **Content-Type**: `text/event-stream`
+- **Events**:
+  - `connected`: Initial snapshot of listings, stats, and recent outbids
+  - `leaderboard_update`: Fired on every new listing or outbid with updated rankings
+  - `visitors_update`: Fired when active visitor count changes
+  - `click_update`: Fired when a listing receives a click redirect
+
+---
+
+## Rules & Safety Standards
+
+- **Prohibited Content**: Phishing, malware, scams, hate speech, illegal products, deceptive redirects, and malicious links are strictly banned. Violating listings are removed immediately without refund.
+- **Domain Deduplication**: Each unique domain (e.g., `example.com`) can only have one active listing at a time to prevent feed flooding. Existing listings for the same domain must be outbid/boosted.
+- **Payment Verification**: Stripe Checkout with cryptographic webhook validation ensures only genuine, settled transactions update the live rankings.
+
+---
+
+## Contact & Creator
+
+- **Platform**: [paylink.lol](https://paylink.lol)
+- **Creator / Maintainer**: Aras ([@mustaaras](https://x.com/mustaaras))
+- **Support & Inquiries**: contact@paylink.lol
